@@ -30,5 +30,23 @@
             <!-- Page Content -->
             @yield('content')
         </div>
+        <!-- Footer Section -->
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+            <p class="text-sm text-gray-300">
+                &copy; {{ date('Y') }} {{ config('app.name', 'Laravel') }}. All Rights Reserved.
+            </p>
+            <ul class="flex space-x-4 mt-2 md:mt-0">
+                <li>
+                    <a href="{{ route('privacy.policy') }}" class="text-gray-300 hover:text-white transition">Privacy
+                        Policy</a>
+                </li>
+                <li>
+                    <a href="{{ route('terms.service') }}" class="text-gray-300 hover:text-white transition">Terms of
+                        Service</a>
+                </li>
+            </ul>
+        </div>
+    </footer>
     </body>
 </html>

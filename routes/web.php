@@ -50,5 +50,7 @@ Route::middleware('auth:kader')->group(function () {
     Route::post('/kader/update-record/{id}', [KaderController::class, 'updateRecord'])->name('kader.updateRecord'); 
 });
 
+Route::view('/privacy-policy', 'privacy-policy')->name('privacy.policy');
+Route::view('/terms-of-service', 'terms-of-service')->name('terms.service');
 
 require __DIR__.'/auth.php';
