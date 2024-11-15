@@ -45,6 +45,9 @@ Route::middleware('auth:dokter')->group(function () {
 
 Route::middleware('auth:kader')->group(function () {
     Route::get('/kader/dashboard', [KaderController::class, 'dashboard'])->name('kader.dashboard');
+    Route::get('/kader/patient/{id}', [KaderController::class, 'viewPatient'])->name('kader.view_patient');
+    Route::get('/kader/edit-record/{id}', [KaderController::class, 'editRecord'])->name('kader.editRecord'); 
 });
+
 
 require __DIR__.'/auth.php';

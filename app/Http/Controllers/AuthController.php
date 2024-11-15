@@ -39,22 +39,28 @@ class AuthController extends Controller
 
         // Check if Dokter exists
         $dokter = Dokter::where('nama', $request->name)
-            ->where('nik', $request->nik)
-            ->first();
+        ->where('nik', $request->nik)
+        ->first();
 
         if ($dokter) {
-            // Show password prompt if Dokter exists
-            return view('auth.password', ['user' => $dokter, 'role' => 'dokter']);
+            // Pass user and role to the view for password modal
+            return view('auth.password', [
+                'user' => $dokter, 
+                'role' => 'dokter'
+            ]);
         }
 
         // Check if Kader exists
         $kader = Kader::where('nama', $request->name)
-            ->where('nik', $request->nik)
-            ->first();
+        ->where('nik', $request->nik)
+        ->first();
 
         if ($kader) {
-            // Show password prompt if Kader exists
-            return view('auth.password', ['user' => $kader, 'role' => 'kader']);
+            // Pass user and role to the view for password modal
+            return view('auth.password', [
+                'user' => $kader, 
+                'role' => 'kader'
+            ]);
         }
 
         // If no match found
