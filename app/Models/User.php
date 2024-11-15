@@ -45,4 +45,19 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function isDokter()
+    {
+        return $this->user_type === 'dokter';
+    }
+
+    public function isKader()
+    {
+        return $this->user_type === 'kader';
+    }
+
+    public function isPasien()
+    {
+        return $this->user_type === 'pasien';
+    }
 }

@@ -44,4 +44,23 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/');
     }
+
+    public function authenticated(Request $request, $user)
+    {
+        // Redirect based on user role
+        if ($user->role === 'pasien') {
+            return redirect()->route('pasien.home');
+        }
+
+        if ($user->role === 'dokter') {
+            return redirect()->route('dokter.dashboard');
+        }
+
+        if ($user->role === 'kader') {
+            return redirect()->route('kader.dashboard');
+        }
+
+        // Default redirect if role is undefined or unexpected
+        return redirect('/');
+    }
 }

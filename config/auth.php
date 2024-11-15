@@ -40,6 +40,18 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'pasien' => [
+            'driver' => 'session',
+            'provider' => 'pasiens',
+        ],
+        'dokter' => [
+            'driver' => 'session',
+            'provider' => 'dokters',
+        ],
+        'kader' => [
+            'driver' => 'session',
+            'provider' => 'kaders',
+        ],
     ],
 
     /*
@@ -63,6 +75,18 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
+        ],
+            'pasiens' => [
+            'driver' => 'eloquent',
+            'model' => env('AUTH_MODEL', App\Models\Pasien::class),
+        ],
+        'dokters' => [
+            'driver' => 'eloquent',
+            'model' => env('AUTH_MODEL', App\Models\Dokter::class),
+        ],
+        'kaders' => [
+            'driver' => 'eloquent',
+            'model' => env('AUTH_MODEL', App\Models\Kader::class),
         ],
 
         // 'users' => [
