@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth:pasien')->group(function () {
     Route::get('/pasien/home', [PasienController::class, 'home'])->name('pasien.home');
+    Route::get('/pasien/{id}/blood-pressure-data', [PasienController::class, 'showBloodPressureData']);
 });
 
 Route::middleware('auth:dokter')->group(function () {

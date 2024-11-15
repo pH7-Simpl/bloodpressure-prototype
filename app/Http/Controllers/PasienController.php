@@ -11,6 +11,19 @@ use Illuminate\Support\Facades\Auth;
 
 class PasienController extends Controller
 {
+    public function showBloodPressureData($patient_id)
+    {
+        // Fetch blood pressure readings for the specific patient
+        $readings = BloodPressureReading::where('patient_id', $patient_id)->get();
+
+        // If no readings are found, redirect with a message
+        if ($readings->isEmpty()) {
+            return redirect()->route('pasien.dashboard')->with('error', 'No blood pressure readings available.');
+        }
+
+        // Pass the readings to the view
+        return view('pasien.blood_pressure_data', compact('readings'));
+    }
     public function home() {
         $pasien = Auth::guard('pasien')->user();
     
