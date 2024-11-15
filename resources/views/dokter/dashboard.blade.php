@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="min-h-screen bg-cover bg-center flex justify-center items-center" style="background-image: url('{{ asset('images/rl.jpg') }}');">
-    <div class="max-w-4xl w-full bg-white p-6 rounded-lg shadow-lg">
+    <div class="max-w-4xl mt-6 w-full bg-white p-6 rounded-lg shadow-lg">
         <h1 class="text-3xl font-semibold text-gray-800 mb-4">Welcome Dr. {{ Auth::guard('dokter')->user()->nama }} to the Dokter Dashboard</h1>
         <p class="text-gray-600 mb-6">As a doctor, you can manage patient data, view blood pressure readings, and more.</p>
 

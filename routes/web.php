@@ -47,6 +47,7 @@ Route::middleware('auth:kader')->group(function () {
     Route::get('/kader/dashboard', [KaderController::class, 'dashboard'])->name('kader.dashboard');
     Route::get('/kader/patient/{id}', [KaderController::class, 'viewPatient'])->name('kader.view_patient');
     Route::get('/kader/patient/{id}/blood-pressure', [KaderController::class, 'editPatientBloodPressure'])->name('kader.editPatientBloodPressure');
+    Route::get('/kader/patient/{id}/blood-pressure-data', [KaderController::class, 'getBloodPressureData']);
     Route::get('/kader/blood-pressure/{id}', [KaderController::class, 'viewBloodPressure'])->name('kader.viewBloodPressure');
     Route::get('/kader/add-blood-pressure/{patient}', [KaderController::class, 'addBloodPressure'])->name('kader.addBloodPressure');
     Route::post('/kader/store-blood-pressure', [KaderController::class, 'storeBloodPressure'])->name('kader.storeBloodPressure');

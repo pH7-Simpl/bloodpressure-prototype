@@ -60,6 +60,14 @@ public function storeBloodPressure(Request $request)
 
     return redirect()->route('kader.editPatientBloodPressure', $request->pasien_id)->with('success', 'New blood pressure reading added.');
 }
+public function getBloodPressureData($patientId)
+{
+    $readings = BloodPressureReading::where('pasien_id', $patientId)
+                ->orderBy('date', 'asc')
+                ->get(['date', 'morning_value_systole', 'morning_value_diastole', 'afternoon_value_systole', 'afternoon_value_diastole', 'night_value_systole', 'night_value_diastole']);
+    
+    return response()->json($readings);
+}
 
 public function editBloodPressure($id)
 {
