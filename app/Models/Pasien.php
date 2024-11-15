@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable; // Add this import
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Pasien extends Authenticatable // Change this to extend Authenticatable
+class Pasien extends Authenticatable
 {
     use HasFactory;
 
@@ -15,6 +15,13 @@ class Pasien extends Authenticatable // Change this to extend Authenticatable
         'no_bpjs', 'alamat', 'provinsi', 'kab_kota', 'kecamatan', 'email'
     ];
 
+    // Define the relationship to the Kader model
+    public function kader()
+    {
+        return $this->belongsTo(Kader::class);
+    }
+
+    // Define the relationship to BloodPressureReading
     public function bloodPressureReadings()
     {
         return $this->hasMany(BloodPressureReading::class);

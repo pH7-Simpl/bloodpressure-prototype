@@ -28,6 +28,7 @@ return new class extends Migration
         $table->string('kab_kota');
         $table->string('kecamatan');
         $table->string('email')->unique();
+        $table->foreignId('kader_id')->constrained()->onDelete('cascade'); // Assuming 'kader_id' is the foreign key
         $table->timestamps();
     });
 }

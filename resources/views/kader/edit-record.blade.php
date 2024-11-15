@@ -2,11 +2,11 @@
 
 @section('content')
 <div class="container">
-    <h1 class="text-2xl font-semibold mb-4">Edit Blood Pressure Record</h1>
+    <h1 class="text-2xl font-semibold mb-4">Edit Blood Pressure Record for {{ $pasien->nama }}</h1>
 
     <form action="{{ route('kader.updateRecord', $reading->id) }}" method="POST">
         @csrf
-        @method('PUT')  <!-- Use PUT for update operation -->
+        @method('POST')
 
         <div class="mb-4">
             <label for="morning_value" class="block text-sm font-medium text-gray-700">Morning Blood Pressure</label>

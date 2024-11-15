@@ -14,4 +14,10 @@ class Kader extends Authenticatable
         'agama', 'golongan_darah', 'no_handphone', 'alamat', 'provinsi',
         'kab_kota', 'kecamatan', 'email', 'password'
     ];
+
+    // Define the relationship to the Pasien model
+    public function pasiens()
+    {
+        return $this->hasMany(Pasien::class);
+    }
 }
