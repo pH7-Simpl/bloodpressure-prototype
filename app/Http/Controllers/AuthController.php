@@ -92,7 +92,7 @@ class AuthController extends Controller
         }
 
         // If password incorrect
-        // return redirect()->back()->with('error', 'Invalid password');
+        return redirect()->route('login');
     }
 
     public function showRegistrationForm()
@@ -119,10 +119,6 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required|string|min:8|confirmed', // Password for Dokter and Kader only
         ]);
-
-        // 'nama', 'nik', 'tempat_lahir', 'tanggal_lahir', 'jenis_kelamin',
-        // 'agama', 'golongan_darah', 'no_handphone', 'alamat', 'provinsi',
-        // 'kab_kota', 'kecamatan', 'email', 'password'
 
         // Create the user based on the role
         if ($request->role == 'dokter') {

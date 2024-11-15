@@ -47,6 +47,7 @@ Route::middleware('auth:kader')->group(function () {
     Route::get('/kader/dashboard', [KaderController::class, 'dashboard'])->name('kader.dashboard');
     Route::get('/kader/patient/{id}', [KaderController::class, 'viewPatient'])->name('kader.view_patient');
     Route::get('/kader/edit-record/{id}', [KaderController::class, 'editRecord'])->name('kader.editRecord'); 
+    Route::post('/kader/update-record/{id}', [KaderController::class, 'updateRecord'])->name('kader.updateRecord'); 
 });
 
 

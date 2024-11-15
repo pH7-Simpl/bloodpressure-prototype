@@ -15,4 +15,9 @@ class Dokter extends Authenticatable
         'agama', 'golongan_darah', 'no_handphone', 'alamat', 'provinsi',
         'kab_kota', 'kecamatan', 'email', 'password'
     ];
+
+    public function pasiens()
+    {
+        return $this->hasMany(Pasien::class);
+    }
 }

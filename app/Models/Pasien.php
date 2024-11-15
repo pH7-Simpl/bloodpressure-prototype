@@ -21,6 +21,11 @@ class Pasien extends Authenticatable
         return $this->belongsTo(Kader::class);
     }
 
+    public function dokter()
+    {
+        return $this->belongsTo(Dokter::class);
+    }
+
     // Define the relationship to BloodPressureReading
     public function bloodPressureReadings()
     {
