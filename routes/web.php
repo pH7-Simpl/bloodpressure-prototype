@@ -53,6 +53,8 @@ Route::middleware('auth:kader')->group(function () {
     Route::get('/kader/edit-blood-pressure/{id}', [KaderController::class, 'editBloodPressure'])->name('kader.editBloodPressure');
     Route::delete('/kader/delete-blood-pressure/{id}', [KaderController::class, 'deleteBloodPressure'])->name('kader.deleteBloodPressure');
     Route::put('/kader/update-blood-pressure/{id}', [KaderController::class, 'updateBloodPressure'])->name('kader.updateBloodPressure');
+    Route::post('/kader/add-patient/{patient_id}', [KaderController::class, 'addPatientToKader'])->name('kader.addPatientToKader');
+    Route::post('/kader/unassign/{patient}', [KaderController::class, 'unassignPatient'])->name('kader.unassignPatient');
 });
 
 Route::view('/privacy-policy', 'privacy-policy')->name('privacy.policy');

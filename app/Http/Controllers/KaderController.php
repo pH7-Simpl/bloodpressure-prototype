@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Pasien; // Import Pasien model
 use App\Models\BloodPressureReading;
+use Illuminate\Support\Facades\Auth;
 
 class KaderController extends Controller
 {
@@ -93,11 +94,46 @@ public function deleteBloodPressure($id)
                      ->with('success', 'Blood pressure reading deleted successfully.');
 }
 
+public function addPatientToKader($patient_id)
+    {
+        // Find the patient by ID
+        $patient = Pasien::findOrFail($patient_id);
+
+        // Ensure the patient is not already assigned to a kader
+        if ($patient->kader_id === null) {
+            // Assign the patient to the current logged-in kader
+            $patient->kader_id = Auth::guard('kader')->user()->id;
+            $patient->save();
+
+            return redirect()->route('kader.dashboard')->with('success', 'Patient added to your supervision.');
+        }
+
+        return redirect()->route('kader.dashboard')->with('error', 'This patient is already assigned to another kader.');
+    }
+
+    public function unassignPatient($patient_id)
+{
+    // Find the patient by ID
+    $patient = Pasien::findOrFail($patient_id);
+
+    // Check if the patient is assigned to the current logged-in kader
+    if ($patient->kader_id == Auth::guard('kader')->user()->id) {
+        // Unassign the patient from the current kader
+        $patient->kader_id = null;
+        $patient->save();
+
+        return redirect()->route('kader.dashboard')->with('success', 'Patient has been unassigned from your supervision.');
+    }
+
+    return redirect()->route('kader.dashboard')->with('error', 'You do not have permission to unassign this patient.');
+}
+
     public function dashboard() {
-        $patients = auth()->guard('kader')->user()->pasiens;
+        $unassignedPatients  = Pasien::whereNull('kader_id')->get();
+        $supervisedPatients  = auth()->guard('kader')->user()->pasiens;
     
         // Return the view with patients data
-        return view('kader.dashboard', compact('patients'));
+        return view('kader.dashboard', compact('supervisedPatients', 'unassignedPatients'));
     }
 }
 

@@ -14,35 +14,52 @@
 
             <ul class="list-disc ml-5 space-y-2">
                 <!-- Removed previous incorrect link to a non-existent $reading variable -->
-                @foreach ($patients as $patient)
+                @foreach ($supervisedPatients as $patient)
                     <li class="text-gray-800">
                         {{ $patient->nama }}
                         <a href="{{ route('kader.editPatientBloodPressure', $patient->id) }}"
                             class="ml-4 text-blue-600 hover:underline">
                             Edit Blood Pressure
                         </a>
+
+                        <!-- Unassign Button -->
+                        <form action="{{ route('kader.unassignPatient', $patient->id) }}" method="POST" class="inline ml-4"
+                            id="unassign-form-{{ $patient->id }}">
+                            @csrf
+                            @method('POST')
+                            <button type="button" onclick="confirmUnassign({{ $patient->id }})"
+                                class="text-red-600 hover:underline">Unassign</button>
+                        </form>
                     </li>
                 @endforeach
             </ul>
         </div>
 
-        {{-- <!-- Edit Blood Pressure Section -->
+        <!-- Display patients not assigned to any kader -->
         <div class="mb-8">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Edit Blood Pressure Records</h2>
-            <p class="text-gray-600 mb-4">You can add or update blood pressure records for the patients under your
-                supervision.</p>
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Add Patients to Your Supervision</h2>
+            <p class="text-gray-600 mb-4">Below are the patients that are not currently supervised by any kader.</p>
 
-            <!-- Removed previous incorrect link to a non-existent $reading variable -->
-            @foreach ($patients as $patient)
-                <li class="text-gray-800">
-                    {{ $patient->nama }}
-                    <a href="{{ route('kader.editPatientBloodPressure', $patient->id) }}"
-                        class="ml-4 text-blue-600 hover:underline">
-                        Edit Blood Pressure
-                    </a>
-                </li>
-            @endforeach
-        </div> --}}
+            @if ($unassignedPatients->isEmpty())
+                <p>No patients available for assignment.</p>
+            @else
+                <ul class="list-disc ml-5 space-y-2">
+                    @foreach ($unassignedPatients as $patient)
+                        <li class="text-gray-800">
+                            {{ $patient->nama }}
+                            <!-- Assign Button -->
+                            <form action="{{ route('kader.addPatientToKader', $patient->id) }}" method="POST"
+                                class="inline ml-4" id="assign-form-{{ $patient->id }}">
+                                @csrf
+                                @method('POST')
+                                <button type="button" onclick="confirmAssign({{ $patient->id }})"
+                                    class="text-blue-600 hover:underline">Assign</button>
+                            </form>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+        </div>
 
         <!-- Health Suggestions Section -->
         <div class="mb-8">
@@ -65,3 +82,23 @@
         </form>
     </div>
 @endsection
+
+<script>
+    // Confirm Assign function
+    function confirmAssign(patientId) {
+        // Display the confirmation dialog for assigning
+        if (confirm('Are you sure you want to assign this patient to your supervision?')) {
+            // If confirmed, submit the form
+            document.getElementById('assign-form-' + patientId).submit();
+        }
+    }
+
+    // Confirm Unassign function
+    function confirmUnassign(patientId) {
+        // Display the confirmation dialog for unassigning
+        if (confirm('Are you sure you want to unassign this patient from your supervision?')) {
+            // If confirmed, submit the form
+            document.getElementById('unassign-form-' + patientId).submit();
+        }
+    }
+</script>
