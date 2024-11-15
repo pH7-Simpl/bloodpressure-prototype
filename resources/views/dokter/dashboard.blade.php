@@ -1,5 +1,5 @@
 <!-- resources/views/dokter/dashboard.blade.php -->
-@extends('layouts.app')
+@extends('layouts.appdokter')
 
 @section('content')
 <div class="min-h-screen bg-cover bg-center flex justify-center items-center" style="background-image: url('{{ asset('images/rl.jpg') }}');">

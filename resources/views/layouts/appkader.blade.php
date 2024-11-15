@@ -16,7 +16,7 @@
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-cover bg-center" style="background-image: url('{{ asset('images/rl.jpg') }}');">
-            @include('layouts.navigation')
+            @include('layouts.navigationkader')
 
             <!-- Page Heading -->
             @isset($header)
