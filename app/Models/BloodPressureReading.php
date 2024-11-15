@@ -9,7 +9,7 @@ class BloodPressureReading extends Model
     use HasFactory;
 
     protected $fillable = [
-        'pasien_id', 'date', 'morning_value', 'afternoon_value', 'night_value'
+        'pasien_id', 'date', 'morning_value_systole', 'morning_value_diastole', 'afternoon_value_systole', 'afternoon_value_diastole', 'night_value_systole', 'night_value_diastole'
     ];
 
     public function pasien()

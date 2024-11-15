@@ -15,17 +15,17 @@ class PasienSeeder extends Seeder
     {
         // Create or retrieve the pasien with id = 1
         $pasien = Pasien::firstOrCreate(
-            ['id' => 1],
+            ['id' => 2],
             [
                 'nama' => 'John Doe',
                 'nik' => '1234567890123456',
                 'tempat_lahir' => 'Jakarta',
                 'tanggal_lahir' => '1990-01-01',
-                'jenis_kelamin' => 'Male',
+                'jenis_kelamin' => 'Laki-Laki',
                 'agama' => 'Christian',
                 'golongan_darah' => 'O',
                 'no_handphone' => '081234567890',
-                'kategori_pasien' => 'General',
+                'kategori_pasien' => 'Umum',
                 'no_bpjs' => '987654321',
                 'alamat' => 'Jl. Example No. 1',
                 'provinsi' => 'DKI Jakarta',
@@ -37,19 +37,25 @@ class PasienSeeder extends Seeder
 
         // Create related BloodPressureReading entries for this pasien
         BloodPressureReading::create([
-            'pasien_id' => $pasien->id,
-            'date' => '2024-11-01',
-            'morning_value' => 120,
-            'afternoon_value' => 125,
-            'night_value' => 115,
+            'pasien_id' => 2,
+            'date' => '2024-11-11',
+            'morning_value_systole' => 120,
+            'morning_value_diastole' => 80,
+            'afternoon_value_systole' => 125,
+            'afternoon_value_diastole' => 85,
+            'night_value_systole' => 115,
+            'night_value_diastole' => 75,
         ]);
 
         BloodPressureReading::create([
-            'pasien_id' => $pasien->id,
-            'date' => '2024-11-02',
-            'morning_value' => 118,
-            'afternoon_value' => 122,
-            'night_value' => 116,
+            'pasien_id' => 2,
+            'date' => '2024-11-10',
+            'morning_value_systole' => 123,
+            'morning_value_diastole' => 81,
+            'afternoon_value_systole' => 130,
+            'afternoon_value_diastole' => 82,
+            'night_value_systole' => 111,
+            'night_value_diastole' => 60,
         ]);
     }
 }

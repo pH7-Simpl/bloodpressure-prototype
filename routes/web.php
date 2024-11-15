@@ -46,8 +46,13 @@ Route::middleware('auth:dokter')->group(function () {
 Route::middleware('auth:kader')->group(function () {
     Route::get('/kader/dashboard', [KaderController::class, 'dashboard'])->name('kader.dashboard');
     Route::get('/kader/patient/{id}', [KaderController::class, 'viewPatient'])->name('kader.view_patient');
-    Route::get('/kader/edit-record/{id}', [KaderController::class, 'editRecord'])->name('kader.editRecord'); 
-    Route::post('/kader/update-record/{id}', [KaderController::class, 'updateRecord'])->name('kader.updateRecord'); 
+    Route::get('/kader/patient/{id}/blood-pressure', [KaderController::class, 'editPatientBloodPressure'])->name('kader.editPatientBloodPressure');
+    Route::get('/kader/blood-pressure/{id}', [KaderController::class, 'viewBloodPressure'])->name('kader.viewBloodPressure');
+    Route::get('/kader/add-blood-pressure/{patient}', [KaderController::class, 'addBloodPressure'])->name('kader.addBloodPressure');
+    Route::post('/kader/store-blood-pressure', [KaderController::class, 'storeBloodPressure'])->name('kader.storeBloodPressure');
+    Route::get('/kader/edit-blood-pressure/{id}', [KaderController::class, 'editBloodPressure'])->name('kader.editBloodPressure');
+    Route::delete('/kader/delete-blood-pressure/{id}', [KaderController::class, 'deleteBloodPressure'])->name('kader.deleteBloodPressure');
+    Route::put('/kader/update-blood-pressure/{id}', [KaderController::class, 'updateBloodPressure'])->name('kader.updateBloodPressure');
 });
 
 Route::view('/privacy-policy', 'privacy-policy')->name('privacy.policy');
