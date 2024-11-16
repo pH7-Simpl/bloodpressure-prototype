@@ -36,35 +36,56 @@ class DokterController extends Controller
         return redirect()->back()->with('success', 'Medicine prescribed successfully');
     }
 
-    public function dashboard() {
+    public function dashboard()
+    {
         return view('dokter.dashboard');
     }
-
-    public function managePatients(Request $request)
+    public function searchAssignedPatients(Request $request)
 {
-    $dokterId = auth()->user()->id;
+    $search = $request->query('search', '');
+    $assignedPatients = Pasien::where('assigned_to_dokter', true)
+        ->where('nama', 'like', "%{$search}%")
+        ->get();
 
-    // Get the search queries for assigned and unassigned patients
-    $assignedSearch = $request->input('assigned_search');
-    $unassignedSearch = $request->input('unassigned_search');
-
-    // Fetch assigned patients with pagination and search filter
-    $assignedPatients = Pasien::where('dokter_id', $dokterId)
-                                ->when($assignedSearch, function($query, $assignedSearch) {
-                                    return $query->where('nama', 'like', "%{$assignedSearch}%");
-                                })
-                                ->paginate(10); // Pagination, 10 patients per page
-
-    // Fetch unassigned patients with pagination and search filter
-    $unassignedPatients = Pasien::whereNull('dokter_id')
-                                ->when($unassignedSearch, function($query, $unassignedSearch) {
-                                    return $query->where('nama', 'like', "%{$unassignedSearch}%");
-                                })
-                                ->paginate(10); // Pagination, 10 patients per page
-
-    return view('dokter.manage-patients', compact('assignedPatients', 'unassignedPatients', 'assignedSearch', 'unassignedSearch'));
+    return response()->json($assignedPatients);
 }
 
+public function searchUnassignedPatients(Request $request)
+{
+    $search = $request->query('search', '');
+    $unassignedPatients = Pasien::where('assigned_to_dokter', false)
+        ->where('nama', 'like', "%{$search}%")
+        ->get();
+
+    return response()->json($unassignedPatients);
+}
+
+
+
+    public function managePatients(Request $request)
+    {
+        $dokterId = auth()->user()->id;
+
+        // Get the search queries for assigned and unassigned patients
+        $assignedSearch = $request->input('assigned_search');
+        $unassignedSearch = $request->input('unassigned_search');
+
+        // Fetch assigned patients with pagination and search filter
+        $assignedPatients = Pasien::where('dokter_id', $dokterId)
+            ->when($assignedSearch, function ($query, $assignedSearch) {
+                return $query->where('nama', 'like', "%{$assignedSearch}%");
+            })
+            ->paginate(10); // Pagination, 10 patients per page
+
+        // Fetch unassigned patients with pagination and search filter
+        $unassignedPatients = Pasien::whereNull('dokter_id')
+            ->when($unassignedSearch, function ($query, $unassignedSearch) {
+                return $query->where('nama', 'like', "%{$unassignedSearch}%");
+            })
+            ->paginate(10); // Pagination, 10 patients per page
+
+        return view('dokter.manage-patients', compact('assignedPatients', 'unassignedPatients', 'assignedSearch', 'unassignedSearch'));
+    }
 
     public function addPatient($id)
     {
@@ -88,26 +109,36 @@ class DokterController extends Controller
         return redirect()->route('dokter.managePatients')->with('success', 'Patient unassigned successfully.');
     }
     public function getBloodPressureData($patientId)
-{
-    
-    $readings = BloodPressureReading::where('pasien_id', $patientId)
-                ->orderBy('date', 'asc')
-                ->get(['date', 'morning_value_systole', 'morning_value_diastole', 'afternoon_value_systole', 'afternoon_value_diastole', 'night_value_systole', 'night_value_diastole']);
-    
-    return response()->json($readings);
-}
+    {
 
-public function viewBloodPressure() {
-    $assignedPatients  = auth()->guard('dokter')->user()->pasiens;
-    
+        $readings = BloodPressureReading::where('pasien_id', $patientId)
+            ->orderBy('date', 'asc')
+            ->get(['date', 'morning_value_systole', 'morning_value_diastole', 'afternoon_value_systole', 'afternoon_value_diastole', 'night_value_systole', 'night_value_diastole']);
+
+        return response()->json($readings);
+    }
+
+    public function viewBloodPressure()
+    {
+        $assignedPatients = auth()->guard('dokter')->user()->pasiens;
+
         // Return the view with patients data
         return view('dokter.blood_pressure_view', compact('assignedPatients'));
-}
+    }
 
-    public function managePatientsMedicine()
+    public function managePatientsMedicine(Request $request)
     {
-        // Fetch patients managed by the logged-in doctor
-        $pasiens = Pasien::where('dokter_id', auth()->user()->id)->get();
+        $dokterId = auth()->user()->id;
+
+        // Ambil input pencarian dari request
+        $search = $request->input('search');
+
+        // Fetch patients yang diassign ke dokter dan filter berdasarkan nama jika ada input pencarian
+        $pasiens = Pasien::where('dokter_id', $dokterId)
+            ->when($search, function ($query, $search) {
+                return $query->where('nama', 'like', "%{$search}%");
+            })
+            ->paginate(5);
 
         return view('dokter.manage-patients-medicine', compact('pasiens'));
     }
@@ -165,29 +196,29 @@ public function viewBloodPressure() {
 
     // Method to update a medicine
     public function updateMedicine(Request $request, $patientId, $medicineId)
-{
-    // Find the medicine by its ID
-    $medicine = Medicine::findOrFail($medicineId);
+    {
+        // Find the medicine by its ID
+        $medicine = Medicine::findOrFail($medicineId);
 
-    // Validate the form data
-    $validated = $request->validate([
-        'medicine_name' => 'required|string|max:255',
-        'dosage' => 'required|string|max:255',
-        'start_date' => 'required|date',
-        'end_date' => 'nullable|date|after_or_equal:start_date',
-    ]);
+        // Validate the form data
+        $validated = $request->validate([
+            'medicine_name' => 'required|string|max:255',
+            'dosage' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+        ]);
 
-    // Update the medicine
-    $medicine->update([
-        'medicine_name' => $validated['medicine_name'],
-        'dosage' => $validated['dosage'],
-        'start_date' => $validated['start_date'],
-        'end_date' => $validated['end_date'],
-    ]);
+        // Update the medicine
+        $medicine->update([
+            'medicine_name' => $validated['medicine_name'],
+            'dosage' => $validated['dosage'],
+            'start_date' => $validated['start_date'],
+            'end_date' => $validated['end_date'],
+        ]);
 
-    // Redirect back to the manage patient medicine page
-    return redirect()->route('dokter.managepatientspecificmedicine', $patientId)->with('success', 'Medicine updated successfully.');
-}
+        // Redirect back to the manage patient medicine page
+        return redirect()->route('dokter.managepatientspecificmedicine', $patientId)->with('success', 'Medicine updated successfully.');
+    }
 
     // Method to delete a medicine
     public function deleteMedicine($patientId, $medicineId)
@@ -199,10 +230,20 @@ public function viewBloodPressure() {
     }
 
     // --------------------------------------
-    public function managePatientsSuggestions()
+    
+    public function managePatientsSuggestions(Request $request)
     {
-        // Fetch patients managed by the logged-in doctor
-        $pasiens = Pasien::where('dokter_id', auth()->user()->id)->get();
+        $dokterId = auth()->user()->id;
+
+        // Ambil input pencarian dari request
+        $search = $request->input('search');
+
+        // Fetch patients yang diassign ke dokter dan filter berdasarkan nama jika ada input pencarian
+        $pasiens = Pasien::where('dokter_id', $dokterId)
+            ->when($search, function ($query, $search) {
+                return $query->where('nama', 'like', "%{$search}%");
+            })
+            ->paginate(5);
 
         return view('dokter.manage-patients-suggestions', compact('pasiens'));
     }
@@ -239,9 +280,9 @@ public function viewBloodPressure() {
 
         Suggestion::create([
             'dokter_id' => Auth::guard('dokter')->user()->id,
-            'pasien_id' => $patientId,                      
-            'title' => $validated['title'],                  
-            'content' => $validated['content'],              
+            'pasien_id' => $patientId,
+            'title' => $validated['title'],
+            'content' => $validated['content'],
             'suggestion_date' => $validated['suggestion_date'],
         ]);
 
@@ -258,27 +299,27 @@ public function viewBloodPressure() {
 
     // Method to update a medicine
     public function updateSuggestions(Request $request, $patientId, $suggestionId)
-{
-    // Find the medicine by its ID
-    $suggestion = Suggestion::findOrFail($suggestionId);
+    {
+        // Find the medicine by its ID
+        $suggestion = Suggestion::findOrFail($suggestionId);
 
-    // Validate the form data
-    $validated = $request->validate([
-        'title' => 'required|string|max:255',
-        'content' => 'required|string|max:5000',
-        'suggestion_date' => 'required|date',
-    ]);
+        // Validate the form data
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string|max:5000',
+            'suggestion_date' => 'required|date',
+        ]);
 
-    // Update the medicine
-    $suggestion->update([
-        'title' => $validated['title'],                  
-        'content' => $validated['content'],              
-        'suggestion_date' => $validated['suggestion_date'],
-    ]);
+        // Update the medicine
+        $suggestion->update([
+            'title' => $validated['title'],
+            'content' => $validated['content'],
+            'suggestion_date' => $validated['suggestion_date'],
+        ]);
 
-    // Redirect back to the manage patient medicine page
-    return redirect()->route('dokter.managepatientspecificsuggestion', $patientId)->with('success', 'Suggestion updated successfully.');
-}
+        // Redirect back to the manage patient medicine page
+        return redirect()->route('dokter.managepatientspecificsuggestion', $patientId)->with('success', 'Suggestion updated successfully.');
+    }
 
     // Method to delete a medicine
     public function deleteSuggestions($patientId, $suggestionId)
@@ -289,10 +330,19 @@ public function viewBloodPressure() {
         return redirect()->route('dokter.managepatientspecificsuggestion', $patientId)->with('success', 'Suggestion deleted successfully.');
     }
     // --------------------------------------
-    public function managePatientsAppointments()
+    public function managePatientsAppointments(Request $request)
     {
-        // Fetch patients managed by the logged-in doctor
-        $pasiens = Pasien::where('dokter_id', auth()->user()->id)->get();
+        $dokterId = auth()->user()->id;
+
+        // Ambil input pencarian dari request
+        $search = $request->input('search');
+
+        // Fetch patients yang diassign ke dokter dan filter berdasarkan nama jika ada input pencarian
+        $pasiens = Pasien::where('dokter_id', $dokterId)
+            ->when($search, function ($query, $search) {
+                return $query->where('nama', 'like', "%{$search}%");
+            })
+            ->paginate(5);
 
         return view('dokter.manage-patients-appointments', compact('pasiens'));
     }
@@ -330,9 +380,9 @@ public function viewBloodPressure() {
 
         Appointment::create([
             'dokter_id' => Auth::guard('dokter')->user()->id,
-            'pasien_id' => $patientId,                      
-            'title' => $validated['title'],                  
-            'description' => $validated['description'],              
+            'pasien_id' => $patientId,
+            'title' => $validated['title'],
+            'description' => $validated['description'],
             'appointment_date' => $validated['appointment_date'],
             'appointment_time' => $validated['appointment_time'],
         ]);
@@ -350,29 +400,29 @@ public function viewBloodPressure() {
 
     // Method to update a medicine
     public function updateAppointments(Request $request, $patientId, $appointmentId)
-{
-    // Find the medicine by its ID
-    $appointment = Appointment::findOrFail($appointmentId);
+    {
+        // Find the medicine by its ID
+        $appointment = Appointment::findOrFail($appointmentId);
 
-    // Validate the form data
-    $validated = $request->validate([
-        'title' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'appointment_date' => 'required|date',
-        'appointment_time' => 'nullable|date_format:H:i',
-    ]);
+        // Validate the form data
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'appointment_date' => 'required|date',
+            'appointment_time' => 'nullable|date_format:H:i',
+        ]);
 
-    // Update the medicine
-    $appointment->update([
-        'title' => $validated['title'],                  
-        'description' => $validated['description'],              
-        'appointment_date' => $validated['appointment_date'],
-        'appointment_time' => $validated['appointment_time'],
-    ]);
+        // Update the medicine
+        $appointment->update([
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'appointment_date' => $validated['appointment_date'],
+            'appointment_time' => $validated['appointment_time'],
+        ]);
 
-    // Redirect back to the manage patient medicine page
-    return redirect()->route('dokter.managepatientspecificappointment', $patientId)->with('success', 'Appointment updated successfully.');
-}
+        // Redirect back to the manage patient medicine page
+        return redirect()->route('dokter.managepatientspecificappointment', $patientId)->with('success', 'Appointment updated successfully.');
+    }
 
     // Method to delete a medicine
     public function deleteAppointments($patientId, $appointmentId)

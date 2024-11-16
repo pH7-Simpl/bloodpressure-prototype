@@ -10,31 +10,32 @@
 
         <!-- Search Form for Assigned Patients -->
         <form method="GET" action="{{ route('dokter.managePatients') }}" class="mb-4">
-            <input type="text" name="assigned_search" value="{{ $assignedSearch ?? '' }}" placeholder="Search Assigned Patients"
-                class="px-4 py-2 border rounded-md" />
+            <input type="text" name="assigned_search" value="{{ $assignedSearch ?? '' }}"
+                placeholder="Search Assigned Patients" class="px-4 py-2 border rounded-md" />
             <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md ml-2">Search</button>
         </form>
 
         @if ($assignedPatients->isEmpty())
             <p class="text-gray-600">No patients assigned yet.</p>
         @else
-        <ul class="list-disc ml-5 space-y-2">
-            @foreach ($assignedPatients as $patient)
-                <li class="text-gray-800">
-                    {{ $patient->nama }}
-                    <form action="{{ route('dokter.removePatient', $patient->id) }}" method="POST" class="inline ml-4"
-                        id="unassign-form-{{ $patient->id }}">
-                        @csrf
-                        @method('POST')
-                        <button type="button" onclick="confirmUnassign({{ $patient->id }})"
-                            class="text-red-600 hover:underline">Unassign</button>
-                    </form>
-                </li>
-            @endforeach
-        </ul>
+            <ul class="list-disc ml-5 space-y-2 assigned-patients">
+                @foreach ($assignedPatients as $patient)
+                    <li class="text-gray-800">
+                        {{ $patient->nama }}
+                        <form action="{{ route('dokter.removePatient', $patient->id) }}" method="POST" class="inline ml-4"
+                            id="unassign-form-{{ $patient->id }}">
+                            @csrf
+                            @method('POST')
+                            <button type="button" onclick="confirmUnassign({{ $patient->id }})"
+                                class="text-red-600 hover:underline">Unassign</button>
+                        </form>
+                    </li>
+                @endforeach
+            </ul>
 
-        <!-- Pagination Links for Assigned Patients -->
-        {{ $assignedPatients->links() }}
+
+            <!-- Pagination Links for Assigned Patients -->
+            {{ $assignedPatients->links() }}
         @endif
     </div>
 
@@ -44,33 +45,33 @@
 
         <!-- Search Form for Unassigned Patients -->
         <form method="GET" action="{{ route('dokter.managePatients') }}" class="mb-4">
-            <input type="text" name="unassigned_search" value="{{ $unassignedSearch ?? '' }}" placeholder="Search Unassigned Patients"
-                class="px-4 py-2 border rounded-md" />
+            <input type="text" name="unassigned_search" value="{{ $unassignedSearch ?? '' }}"
+                placeholder="Search Unassigned Patients" class="px-4 py-2 border rounded-md" />
             <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md ml-2">Search</button>
         </form>
 
         @if ($unassignedPatients->isEmpty())
             <p>No patients available for assignment.</p>
         @else
-        <ul class="list-disc ml-5 space-y-2">
-            @foreach ($unassignedPatients as $patient)
-            <li class="text-gray-800">
-                {{ $patient->nama }}
-                <form action="{{ route('dokter.addPatient', $patient->id) }}" method="POST" class="inline ml-4"
-                    id="assign-form-{{ $patient->id }}">
-                    @csrf
-                    @method('POST')
-                    <button type="button" onclick="confirmAssign({{ $patient->id }})"
-                        class="text-blue-600 hover:underline">Assign</button>
-                    </form>
-                </li>
+            <ul class="list-disc ml-5 space-y-2 unassigned-patients">
+                @foreach ($unassignedPatients as $patient)
+                    <li class="text-gray-800">
+                        {{ $patient->nama }}
+                        <form action="{{ route('dokter.addPatient', $patient->id) }}" method="POST" class="inline ml-4"
+                            id="assign-form-{{ $patient->id }}">
+                            @csrf
+                            @method('POST')
+                            <button type="button" onclick="confirmAssign({{ $patient->id }})"
+                                class="text-blue-600 hover:underline">Assign</button>
+                        </form>
+                    </li>
                 @endforeach
             </ul>
 
             <!-- Pagination Links for Unassigned Patients -->
             {{ $unassignedPatients->links() }}
-            @endif
-        </div>
+        @endif
+    </div>
 </div>
 
 <script>
@@ -87,5 +88,42 @@
             document.getElementById('unassign-form-' + patientId).submit();
         }
     }
+</script>
+<script>document.addEventListener('DOMContentLoaded', function () {
+        // Ambil elemen pencarian dan list pasien
+        const assignedSearchInput = document.querySelector('input[name="assigned_search"]');
+        const assignedPatientList = document.querySelectorAll('.assigned-patients li');
+
+        const unassignedSearchInput = document.querySelector('input[name="unassigned_search"]');
+        const unassignedPatientList = document.querySelectorAll('.unassigned-patients li');
+
+        // Fungsi untuk memfilter pasien
+        function filterPatients(searchInput, patientList) {
+            const searchTerm = searchInput.value.toLowerCase();
+
+            patientList.forEach(patient => {
+                const patientName = patient.textContent.toLowerCase();
+                if (patientName.includes(searchTerm)) {
+                    patient.style.display = ''; // Tampilkan jika cocok
+                } else {
+                    patient.style.display = 'none'; // Sembunyikan jika tidak cocok
+                }
+            });
+        }
+
+        // Event listener untuk pencarian assigned patients
+        if (assignedSearchInput) {
+            assignedSearchInput.addEventListener('input', function () {
+                filterPatients(assignedSearchInput, assignedPatientList);
+            });
+        }
+
+        // Event listener untuk pencarian unassigned patients
+        if (unassignedSearchInput) {
+            unassignedSearchInput.addEventListener('input', function () {
+                filterPatients(unassignedSearchInput, unassignedPatientList);
+            });
+        }
+    });
 </script>
 @endsection

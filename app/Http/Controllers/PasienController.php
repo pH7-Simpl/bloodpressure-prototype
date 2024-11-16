@@ -41,7 +41,9 @@ class PasienController extends Controller
             ->orderBy('appointment_date', 'asc') // Sort by the nearest appointment date
             ->get();
 
+        $kader = $pasien->kader;
+
         // Pass the readings to the view
-        return view('pasien.home', compact('readings', 'medicines', 'appointments'));
+        return view('pasien.home', compact('readings', 'medicines', 'appointments','kader'));
     }
 }

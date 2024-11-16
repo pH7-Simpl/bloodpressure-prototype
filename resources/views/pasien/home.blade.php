@@ -3,21 +3,24 @@
 @section('content')
 <div class="container mx-auto mt-6 p-6 bg-white shadow-md rounded-lg bg-no-repeat">
     <h1 class="text-3xl font-bold text-gray-800 mb-4">Welcome, {{ Auth::guard('pasien')->user()->nama }} to your Dashboard!</h1>
+    @if($kader)
+        <p class="text-lg text-gray-600 mb-4">Your assigned Kader: <strong>{{ $kader->nama }}</strong></p>
+    @else
+        <p class="text-lg text-gray-600 mb-4">You do not have an assigned Kader yet.</p>
+    @endif
     <p class="text-lg text-gray-600 mb-8">Here, you can view your health data, appointments, and receive suggestions for maintaining your well-being.</p>
     
     <!-- Blood Pressure Chart -->
     <div class="mb-8">
         <h2 class="text-2xl font-semibold text-gray-800 mb-4">Your Blood Pressure Chart</h2>
         <div id="chart-container" class="mt-8">
-        @if($readings->isEmpty())
-        <p class="text-gray-600">No blood pressure readings available yet.</p>
-    @else
-
-        <!-- Blood Pressure Chart -->
-        <div class="mt-6">
-            <canvas id="bloodPressureChart"></canvas>
-        </div>
-    @endif
+            @if($readings->isEmpty())
+            <p class="text-gray-600">No blood pressure readings available yet.</p>
+            @else
+            <div class="mt-6">
+                <canvas id="bloodPressureChart"></canvas>
+            </div>
+            @endif
         </div>
     </div>
 
@@ -27,14 +30,22 @@
         @if($medicines->isEmpty())
             <p class="text-gray-600">No medicines have been prescribed to you.</p>
         @else
-            <ul class="list-disc ml-5 space-y-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($medicines as $medicine)
-                    <li class="text-gray-800">
-                        {{ $medicine->medicine_name }} - Dosage: {{ $medicine->dosage }}<br>
-                        Start Date: {{ $medicine->start_date }} - End Date: {{ $medicine->end_date }}
-                    </li>
+                    <div class="bg-blue-100 p-4 rounded-lg shadow-lg">
+                        <h3 class="font-semibold text-lg text-blue-700">{{ $medicine->medicine_name }}</h3>
+                        <p class="text-gray-700">Dosage: {{ $medicine->dosage }}</p>
+                        <p class="text-gray-600">Start Date: {{ $medicine->start_date }}</p>
+                        
+                        <!-- End Date (Hide if not available) -->
+                        @if($medicine->end_date)
+                            <p class="text-gray-600">End Date: {{ $medicine->end_date }}</p>
+                        @else
+                            <p class="text-gray-400"></p>
+                        @endif
+                    </div>
                 @endforeach
-            </ul>
+            </div>
         @endif
     </div>
 
@@ -44,16 +55,16 @@
         @if($appointments->isEmpty())
             <p class="text-gray-600">You don't have any upcoming appointments.</p>
         @else
-            <ul class="list-disc ml-5 space-y-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($appointments as $appointment)
-                    <li class="text-gray-800">
-                        <strong>{{ $appointment->title }}</strong><br>
-                        {{ $appointment->appointment_date }} - {{ $appointment->appointment_time }}<br>
-                        Doctor: Dr. {{ $appointment->dokter->nama }}<br>
-                        Description: {{ $appointment->description }}
-                    </li>
+                    <div class="bg-green-100 p-4 rounded-lg shadow-lg">
+                        <h3 class="font-semibold text-lg text-green-700">{{ $appointment->title }}</h3>
+                        <p class="text-gray-700">Date: {{ $appointment->appointment_date }} - {{ $appointment->appointment_time }}</p>
+                        <p class="text-gray-600">Doctor: Dr. {{ $appointment->dokter->nama }}</p>
+                        <p class="text-gray-600">Description: {{ $appointment->description }}</p>
+                    </div>
                 @endforeach
-            </ul>
+            </div>
         @endif
     </div>
 
@@ -83,10 +94,9 @@
         // Prepare the data from Blade variables
         const readings = @json($readings); // Get the readings as a JavaScript object
         const labels = readings.map(reading => {
-        // Parse the date and format it to only include the date
-        const date = new Date(reading.date);
-        return date.toLocaleDateString('id-ID'); // Adjust locale as needed
-    });
+            const date = new Date(reading.date);
+            return date.toLocaleDateString('id-ID'); // Adjust locale as needed
+        });
         const systoleData = readings.map(reading => reading.morning_value_systole ?? reading.afternoon_value_systole ?? reading.night_value_systole);
         const diastoleData = readings.map(reading => reading.morning_value_diastole ?? reading.afternoon_value_diastole ?? reading.night_value_diastole);
 

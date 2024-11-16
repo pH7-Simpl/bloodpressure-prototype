@@ -8,6 +8,12 @@
 
     <!-- Dropdown for viewing registered patients -->
     <div class="mb-4">
+        <!-- Input untuk Pencarian -->
+        <label for="search-patient" class="block text-gray-700 font-medium mb-2">Search Patient by Name</label>
+        <input type="text" id="search-patient"
+            class="w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            placeholder="Type patient name..." />
+
         <label for="patient-dropdown" class="block text-gray-700 font-medium mb-2">View Patients' Blood
             Pressure</label>
         <select id="patient-dropdown"
@@ -30,7 +36,12 @@
         <h2 class="text-2xl font-semibold text-gray-800 mb-4">Edit Patient Blood Pressure Readings</h2>
         <p class="text-gray-600 mb-4">Here, you can manage the blood pressure readings of patients assigned to you.</p>
 
-        <ul class="list-disc ml-5 space-y-2">
+        <!-- Search Form for Supervised Patients -->
+        <input type="text" id="supervised-search" placeholder="Search Assigned Patients"
+            class="border border-gray-300 px-4 py-2 rounded-md mb-4" />
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md ml-2">Search</button>
+
+        <ul class="list-disc ml-5 space-y-2" id="supervised-patient-list">
             @foreach ($supervisedPatients as $patient)
                 <li class="text-gray-800">
                     {{ $patient->nama }}
@@ -38,7 +49,6 @@
                         class="ml-4 text-blue-600 hover:underline">
                         Edit Blood Pressure
                     </a>
-
                     <!-- Unassign Button -->
                     <form action="{{ route('kader.unassignPatient', $patient->id) }}" method="POST" class="inline ml-4"
                         id="unassign-form-{{ $patient->id }}">
@@ -62,17 +72,15 @@
         <h2 class="text-2xl font-semibold text-gray-800 mb-4">Add Patients to Your Supervision</h2>
         <p class="text-gray-600 mb-4">Below are the patients that are not currently supervised by any kader.</p>
 
-        <!-- Search Form -->
-        <form method="GET" action="{{ route('kader.dashboard') }}" class="mb-4">
-            <input type="text" name="search" value="{{ request()->get('search') }}" placeholder="Search by name"
-                class="border border-gray-300 px-4 py-2 rounded-md" />
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md">Search</button>
-        </form>
+        <!-- Search Form for Unassigned Patients -->
+        <input type="text" id="unassigned-search" placeholder="Search Unassigned Patients"
+            class="border border-gray-300 px-4 py-2 rounded-md mb-4" />
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md ml-2">Search</button>
 
         @if ($unassignedPatients->isEmpty())
             <p>No patients available for assignment.</p>
         @else
-            <ul class="list-disc ml-5 space-y-2">
+            <ul class="list-disc ml-5 space-y-2" id="unassigned-patient-list">
                 @foreach ($unassignedPatients as $patient)
                     <li class="text-gray-800">
                         {{ $patient->nama }}
@@ -94,6 +102,7 @@
         </div>
     </div>
 
+
     <!-- Health Suggestions Section -->
     <div class="mb-8">
         <h2 class="text-2xl font-semibold text-gray-800 mb-4">Health Tips for the Community</h2>
@@ -110,6 +119,78 @@
 @endsection
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Ambil elemen input pencarian dan daftar pasien
+        const supervisedSearchInput = document.getElementById('supervised-search');
+        const supervisedPatientList = document.querySelectorAll('#supervised-patient-list li');
+
+        const unassignedSearchInput = document.getElementById('unassigned-search');
+        const unassignedPatientList = document.querySelectorAll('#unassigned-patient-list li');
+
+        // Fungsi untuk memfilter pasien berdasarkan pencarian
+        function filterPatients(searchInput, patientList) {
+            const searchTerm = searchInput.value.toLowerCase();
+
+            patientList.forEach(patient => {
+                const patientName = patient.textContent.toLowerCase();
+                if (patientName.includes(searchTerm)) {
+                    patient.style.display = ''; // Tampilkan jika cocok
+                } else {
+                    patient.style.display = 'none'; // Sembunyikan jika tidak cocok
+                }
+            });
+        }
+
+        // Event listener untuk pencarian pasien yang sudah diawasi
+        if (supervisedSearchInput) {
+            supervisedSearchInput.addEventListener('input', function () {
+                filterPatients(supervisedSearchInput, supervisedPatientList);
+            });
+        }
+
+        // Event listener untuk pencarian pasien yang belum diawasi
+        if (unassignedSearchInput) {
+            unassignedSearchInput.addEventListener('input', function () {
+                filterPatients(unassignedSearchInput, unassignedPatientList);
+            });
+        }
+    });
+</script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById('search-patient');
+        const patientDropdown = document.getElementById('patient-dropdown');
+
+        // Event listener untuk pencarian pasien
+        searchInput.addEventListener('input', function () {
+            const searchTerm = this.value.toLowerCase();
+
+            // Filter pasien di dalam dropdown
+            Array.from(patientDropdown.options).forEach(option => {
+                const patientName = option.textContent.toLowerCase();
+                if (patientName.includes(searchTerm) || option.value === '') {
+                    option.style.display = 'block'; // Tampilkan jika cocok
+                } else {
+                    option.style.display = 'none'; // Sembunyikan jika tidak cocok
+                }
+            });
+        });
+
+        // Fungsi untuk mengambil data tekanan darah (logika sama seperti sebelumnya)
+        patientDropdown.addEventListener('change', function () {
+            const patientId = this.value;
+
+            if (patientId) {
+                fetch(`/dokter/patient/${patientId}/blood-pressure-data`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Logika untuk memproses dan menampilkan data tekanan darah
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
+            }
+        });
+    });
+</script>
 <script>
     // Confirm Assign function
     function confirmAssign(patientId) {
@@ -141,10 +222,10 @@
                     .then(response => response.json())
                     .then(data => {
                         const labels = data.map(reading => {
-        // Parse the date and format it to only include the date
-        const date = new Date(reading.date);
-        return date.toLocaleDateString('id-ID'); // Adjust locale as needed
-    });
+                            // Parse the date and format it to only include the date
+                            const date = new Date(reading.date);
+                            return date.toLocaleDateString('id-ID'); // Adjust locale as needed
+                        });
                         const systoleData = data.map(reading => reading.morning_value_systole ?? reading.afternoon_value_systole ?? reading.night_value_systole);
                         const diastoleData = data.map(reading => reading.morning_value_diastole ?? reading.afternoon_value_diastole ?? reading.night_value_diastole);
 
