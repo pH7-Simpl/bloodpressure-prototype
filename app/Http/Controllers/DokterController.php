@@ -7,6 +7,8 @@ use App\Models\BloodPressureReading;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Medicine;
+use App\Models\Suggestion;
+use App\Models\Appointment;
 use App\Models\Pasien;
 
 class DokterController extends Controller
@@ -194,5 +196,190 @@ public function viewBloodPressure() {
         $medicine->delete();
 
         return redirect()->route('dokter.managepatientspecificmedicine', $patientId)->with('success', 'Medicine deleted successfully.');
+    }
+
+    // --------------------------------------
+    public function managePatientsSuggestions()
+    {
+        // Fetch patients managed by the logged-in doctor
+        $pasiens = Pasien::where('dokter_id', auth()->user()->id)->get();
+
+        return view('dokter.manage-patients-suggestions', compact('pasiens'));
+    }
+
+    // Add medicine to a specific patient
+    public function viewAddSuggestions($id)
+    {
+        $pasien = Pasien::findOrFail($id); // Find the patient
+        return view('dokter.add-suggestions', compact('pasien'));
+    }
+
+    public function viewSuggestions($patientId)
+    {
+        $pasien = Pasien::findOrFail($patientId);
+        $suggestions = Suggestion::where('pasien_id', $pasien->id)->get();
+        return view('dokter.managepatientspecificsuggestion', compact('pasien', 'suggestions'));
+    }
+
+    // Method to show the add medicine form
+    public function addSuggestionsForm($patientId)
+    {
+        $pasien = Pasien::findOrFail($patientId);
+        return view('dokter.add-suggestions', compact('pasien'));
+    }
+
+    // Method to store a new medicine
+    public function storeSuggestions(Request $request, $patientId)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string|max:5000',
+            'suggestion_date' => 'required|date',
+        ]);
+
+        Suggestion::create([
+            'dokter_id' => Auth::guard('dokter')->user()->id,
+            'pasien_id' => $patientId,                      
+            'title' => $validated['title'],                  
+            'content' => $validated['content'],              
+            'suggestion_date' => $validated['suggestion_date'],
+        ]);
+
+        return redirect()->route('dokter.managepatientspecificsuggestion', $patientId)->with('success', 'Suggestion added successfully.');
+    }
+
+    // Method to show the edit medicine form
+    public function editSuggestionsForm($patientId, $suggestionId)
+    {
+        $pasien = Pasien::findOrFail($patientId);
+        $suggestion = Suggestion::findOrFail($suggestionId);
+        return view('dokter.edit-suggestions', compact('pasien', 'suggestion'));
+    }
+
+    // Method to update a medicine
+    public function updateSuggestions(Request $request, $patientId, $suggestionId)
+{
+    // Find the medicine by its ID
+    $suggestion = Suggestion::findOrFail($suggestionId);
+
+    // Validate the form data
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'content' => 'required|string|max:5000',
+        'suggestion_date' => 'required|date',
+    ]);
+
+    // Update the medicine
+    $suggestion->update([
+        'title' => $validated['title'],                  
+        'content' => $validated['content'],              
+        'suggestion_date' => $validated['suggestion_date'],
+    ]);
+
+    // Redirect back to the manage patient medicine page
+    return redirect()->route('dokter.managepatientspecificsuggestion', $patientId)->with('success', 'Suggestion updated successfully.');
+}
+
+    // Method to delete a medicine
+    public function deleteSuggestions($patientId, $suggestionId)
+    {
+        $suggestion = Suggestion::findOrFail($suggestionId);
+        $suggestion->delete();
+
+        return redirect()->route('dokter.managepatientspecificsuggestion', $patientId)->with('success', 'Suggestion deleted successfully.');
+    }
+    // --------------------------------------
+    public function managePatientsAppointments()
+    {
+        // Fetch patients managed by the logged-in doctor
+        $pasiens = Pasien::where('dokter_id', auth()->user()->id)->get();
+
+        return view('dokter.manage-patients-appointments', compact('pasiens'));
+    }
+
+    // Add medicine to a specific patient
+    public function viewAddAppointments($id)
+    {
+        $pasien = Pasien::findOrFail($id); // Find the patient
+        return view('dokter.add-appointments', compact('pasien'));
+    }
+
+    public function viewAppointments($patientId)
+    {
+        $pasien = Pasien::findOrFail($patientId);
+        $appointments = Appointment::where('pasien_id', $pasien->id)->get();
+        return view('dokter.managepatientspecificappointment', compact('pasien', 'appointments'));
+    }
+
+    // Method to show the add medicine form
+    public function addAppointmentsForm($patientId)
+    {
+        $pasien = Pasien::findOrFail($patientId);
+        return view('dokter.add-appointments', compact('pasien'));
+    }
+
+    // Method to store a new medicine
+    public function storeAppointments(Request $request, $patientId)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'appointment_date' => 'required|date',
+            'appointment_time' => 'nullable|date_format:H:i',
+        ]);
+
+        Appointment::create([
+            'dokter_id' => Auth::guard('dokter')->user()->id,
+            'pasien_id' => $patientId,                      
+            'title' => $validated['title'],                  
+            'description' => $validated['description'],              
+            'appointment_date' => $validated['appointment_date'],
+            'appointment_time' => $validated['appointment_time'],
+        ]);
+
+        return redirect()->route('dokter.managepatientspecificappointment', $patientId)->with('success', 'Appointment added successfully.');
+    }
+
+    // Method to show the edit medicine form
+    public function editAppointmentsForm($patientId, $appointmentId)
+    {
+        $pasien = Pasien::findOrFail($patientId);
+        $appointment = Appointment::findOrFail($appointmentId);
+        return view('dokter.edit-appointments', compact('pasien', 'appointment'));
+    }
+
+    // Method to update a medicine
+    public function updateAppointments(Request $request, $patientId, $appointmentId)
+{
+    // Find the medicine by its ID
+    $appointment = Appointment::findOrFail($appointmentId);
+
+    // Validate the form data
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'appointment_date' => 'required|date',
+        'appointment_time' => 'nullable|date_format:H:i',
+    ]);
+
+    // Update the medicine
+    $appointment->update([
+        'title' => $validated['title'],                  
+        'description' => $validated['description'],              
+        'appointment_date' => $validated['appointment_date'],
+        'appointment_time' => $validated['appointment_time'],
+    ]);
+
+    // Redirect back to the manage patient medicine page
+    return redirect()->route('dokter.managepatientspecificappointment', $patientId)->with('success', 'Appointment updated successfully.');
+}
+
+    // Method to delete a medicine
+    public function deleteAppointments($patientId, $appointmentId)
+    {
+        $appointment = Appointment::findOrFail($appointmentId);
+        $appointment->delete();
+
+        return redirect()->route('dokter.managepatientspecificappointment', $patientId)->with('success', 'Appointment deleted successfully.');
     }
 }

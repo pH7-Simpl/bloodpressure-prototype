@@ -48,7 +48,7 @@
                 @foreach($appointments as $appointment)
                     <li class="text-gray-800">
                         <strong>{{ $appointment->title }}</strong><br>
-                        {{ $appointment->appointment_date }}<br>
+                        {{ $appointment->appointment_date }} - {{ $appointment->appointment_time }}<br>
                         Doctor: Dr. {{ $appointment->dokter->nama }}<br>
                         Description: {{ $appointment->description }}
                     </li>

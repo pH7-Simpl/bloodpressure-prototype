@@ -54,6 +54,20 @@ Route::middleware('auth:dokter')->group(function () {
     Route::get('/dokter/patient/{patientId}/managepatientmedicine/{medicineId}/edit', [DokterController::class, 'editMedicineForm'])->name('dokter.editMedicineForm');
     Route::put('/dokter/patient/{patientId}/managepatientmedicine/{medicineId}/update', [DokterController::class, 'updateMedicine'])->name('dokter.updateMedicine');
     Route::delete('/dokter/patient/{patientId}/managepatientmedicine/{medicineId}/delete', [DokterController::class, 'deleteMedicine'])->name('dokter.deleteMedicine');
+    Route::get('/dokter/manage-patients-suggestions', [DokterController::class, 'managePatientsSuggestions'])->name('dokter.managePatientsSuggestions');
+    Route::get('/dokter/patient/{patientId}/managepatientsuggestions', [DokterController::class, 'viewSuggestions'])->name('dokter.managepatientspecificsuggestion');
+    Route::get('/dokter/patient/{patientId}/managepatientsuggestions/add', [DokterController::class, 'addSuggestionsForm'])->name('dokter.addSuggestionsForm');
+    Route::post('/dokter/patient/{patientId}/managepatientsuggestions/store', [DokterController::class, 'storeSuggestions'])->name('dokter.storeSuggestions');
+    Route::get('/dokter/patient/{patientId}/managepatientsuggestions/{suggestionId}/edit', [DokterController::class, 'editSuggestionsForm'])->name('dokter.editSuggestionsForm');
+    Route::put('/dokter/patient/{patientId}/managepatientsuggestions/{suggestionId}/update', [DokterController::class, 'updateSuggestions'])->name('dokter.updateSuggestions');
+    Route::delete('/dokter/patient/{patientId}/managepatientsuggestions/{suggestionId}/delete', [DokterController::class, 'deleteSuggestions'])->name('dokter.deleteSuggestions');
+    Route::get('/dokter/manage-patients-appointments', [DokterController::class, 'managePatientsAppointments'])->name('dokter.managePatientsAppointments');
+    Route::get('/dokter/patient/{patientId}/managepatientappointments', [DokterController::class, 'viewAppointments'])->name('dokter.managepatientspecificappointment');
+    Route::get('/dokter/patient/{patientId}/managepatientappointments/add', [DokterController::class, 'addAppointmentsForm'])->name('dokter.addAppointmentsForm');
+    Route::post('/dokter/patient/{patientId}/managepatientappointments/store', [DokterController::class, 'storeAppointments'])->name('dokter.storeAppointments');
+    Route::get('/dokter/patient/{patientId}/managepatientappointments/{appointmentId}/edit', [DokterController::class, 'editAppointmentsForm'])->name('dokter.editAppointmentsForm');
+    Route::put('/dokter/patient/{patientId}/managepatientappointments/{appointmentId}/update', [DokterController::class, 'updateAppointments'])->name('dokter.updateAppointments');
+    Route::delete('/dokter/patient/{patientId}/managepatientappointments/{appointmentId}/delete', [DokterController::class, 'deleteAppointments'])->name('dokter.deleteAppointments');
 });
 
 Route::middleware('auth:kader')->group(function () {

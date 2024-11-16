@@ -27,13 +27,13 @@
             <div class="bg-yellow-100 p-4 rounded-lg shadow-md hover:bg-yellow-200 transition">
                 <h3 class="text-xl font-medium text-gray-800 mb-2">View Suggestions for Lansia</h3>
                 <p class="text-gray-600">Get healthcare suggestions and tips for senior citizens (Lansia).</p>
-                <a href="#" class="text-yellow-500 hover:underline mt-2 inline-block">Go to Suggestions</a>
+                <a href="{{ route('dokter.managePatientsSuggestions') }}" class="text-yellow-500 hover:underline mt-2 inline-block">Go to Suggestions</a>
             </div>
 
             <div class="bg-purple-100 p-4 rounded-lg shadow-md hover:bg-purple-200 transition">
                 <h3 class="text-xl font-medium text-gray-800 mb-2">View Appointments</h3>
                 <p class="text-gray-600">Check and manage upcoming patient appointments.</p>
-                <a href="#" class="text-purple-500 hover:underline mt-2 inline-block">Go to Appointments</a>
+                <a href="{{ route('dokter.managePatientsAppointments') }}" class="text-purple-500 hover:underline mt-2 inline-block">Go to Appointments</a>
             </div>            
         </div>
     </div>
