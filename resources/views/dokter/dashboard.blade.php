@@ -11,13 +11,13 @@
             <div class="bg-blue-100 p-4 rounded-lg shadow-md hover:bg-blue-200 transition">
                 <h3 class="text-xl font-medium text-gray-800 mb-2">View Patient Blood Pressure</h3>
                 <p class="text-gray-600">Access and manage patients' blood pressure readings.</p>
-                <a href="#" class="text-blue-500 hover:underline mt-2 inline-block">Go to Blood Pressure</a>
+                <a href="{{ route('dokter.viewBloodPressure') }}" class="text-blue-500 hover:underline mt-2 inline-block">Go to Blood Pressure</a>
             </div>
             
             <div class="bg-green-100 p-4 rounded-lg shadow-md hover:bg-green-200 transition">
                 <h3 class="text-xl font-medium text-gray-800 mb-2">View Medicine Information</h3>
                 <p class="text-gray-600">View detailed information about medicines available for patients.</p>
-                <a href="#" class="text-green-500 hover:underline mt-2 inline-block">Go to Medicines</a>
+                <a href="{{ route('dokter.managePatientsMedicine') }}" class="text-green-500 hover:underline mt-2 inline-block">Go to Medicines</a>
             </div>
 
             <div class="bg-yellow-100 p-4 rounded-lg shadow-md hover:bg-yellow-200 transition">

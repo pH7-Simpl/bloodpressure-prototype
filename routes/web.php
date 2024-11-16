@@ -45,6 +45,15 @@ Route::middleware('auth:dokter')->group(function () {
     Route::get('/manage-patients', [DokterController::class, 'managePatients'])->name('dokter.managePatients');
     Route::post('/add-patient/{id}', [DokterController::class, 'addPatient'])->name('dokter.addPatient');
     Route::post('/remove-patient/{id}', [DokterController::class, 'removePatient'])->name('dokter.removePatient');
+    Route::get('/dokter/patient/{id}/blood-pressure-data', [DokterController::class, 'getBloodPressureData']);
+    Route::get('/dokter/blood-pressure/', [DokterController::class, 'viewBloodPressure'])->name('dokter.viewBloodPressure');
+    Route::get('/dokter/manage-patients-medicine', [DokterController::class, 'managePatientsMedicine'])->name('dokter.managePatientsMedicine');
+    Route::get('/dokter/patient/{patientId}/managepatientmedicine', [DokterController::class, 'viewMedicines'])->name('dokter.managepatientspecificmedicine');
+    Route::get('/dokter/patient/{patientId}/managepatientmedicine/add', [DokterController::class, 'addMedicineForm'])->name('dokter.addMedicineForm');
+    Route::post('/dokter/patient/{patientId}/managepatientmedicine/store', [DokterController::class, 'storeMedicine'])->name('dokter.storeMedicine');
+    Route::get('/dokter/patient/{patientId}/managepatientmedicine/{medicineId}/edit', [DokterController::class, 'editMedicineForm'])->name('dokter.editMedicineForm');
+    Route::put('/dokter/patient/{patientId}/managepatientmedicine/{medicineId}/update', [DokterController::class, 'updateMedicine'])->name('dokter.updateMedicine');
+    Route::delete('/dokter/patient/{patientId}/managepatientmedicine/{medicineId}/delete', [DokterController::class, 'deleteMedicine'])->name('dokter.deleteMedicine');
 });
 
 Route::middleware('auth:kader')->group(function () {
