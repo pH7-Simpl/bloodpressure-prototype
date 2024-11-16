@@ -9,7 +9,7 @@
     <!-- Blood Pressure Readings Section -->
     <div class="mb-8">
         <h2 class="text-2xl font-semibold text-gray-800 mb-4">Patient Blood Pressure Readings</h2>
-        <p class="text-gray-600 mb-4">Here, you can view and manage the blood pressure readings of patients assigned to
+        <p class="text-gray-600 mb-4">Here, you can view the blood pressure readings of patients assigned to
             you.</p>
 
         <!-- Dropdown for viewing registered patients -->
@@ -31,6 +31,13 @@
             <canvas id="bloodPressureChart"></canvas>
         </div>
 
+    </div>
+
+    <!-- Edit Blood Pressure Readings Section -->
+    <div class="mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Edit Patient Blood Pressure Readings</h2>
+        <p class="text-gray-600 mb-4">Here, you can manage the blood pressure readings of patients assigned to
+            you.</p>
 
         <ul class="list-disc ml-5 space-y-2">
             <!-- Removed previous incorrect link to a non-existent $reading variable -->
@@ -96,6 +103,8 @@
 </div>
 @endsection
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
 <script>
     // Confirm Assign function
     function confirmAssign(patientId) {
@@ -114,11 +123,6 @@
             document.getElementById('unassign-form-' + patientId).submit();
         }
     }
-</script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
-
-<script>
     document.addEventListener("DOMContentLoaded", function () {
         const chartContainer = document.getElementById('chart-container');
         const patientDropdown = document.getElementById('patient-dropdown');
@@ -131,7 +135,11 @@
                 fetch(`/kader/patient/${patientId}/blood-pressure-data`)
                     .then(response => response.json())
                     .then(data => {
-                        const labels = data.map(reading => reading.date);
+                        const labels = data.map(reading => {
+        // Parse the date and format it to only include the date
+        const date = new Date(reading.date);
+        return date.toLocaleDateString('id-ID'); // Adjust locale as needed
+    });
                         const systoleData = data.map(reading => reading.morning_value_systole ?? reading.afternoon_value_systole ?? reading.night_value_systole);
                         const diastoleData = data.map(reading => reading.morning_value_diastole ?? reading.afternoon_value_diastole ?? reading.night_value_diastole);
 

@@ -32,7 +32,6 @@ class PasienSeeder extends Seeder
                 'kab_kota' => 'Jakarta Selatan',
                 'kecamatan' => 'Kebayoran Baru',
                 'email' => 'john.doe@example.com',
-                'kader_id' => null,
             ]
         );
 

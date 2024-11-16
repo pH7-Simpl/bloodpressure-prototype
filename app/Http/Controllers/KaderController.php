@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Pasien; // Import Pasien model
 use App\Models\BloodPressureReading;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class KaderController extends Controller
 {

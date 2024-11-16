@@ -8,14 +8,6 @@
     @if($readings->isEmpty())
         <p class="text-gray-600">No blood pressure readings available yet.</p>
     @else
-        <ul class="list-disc ml-5 space-y-2">
-            @foreach($readings as $reading)
-                <li class="text-gray-800">
-                    {{ $reading->date }} - 
-                    Morning: {{ $reading->morning_value }} / Afternoon: {{ $reading->afternoon_value }} / Night: {{ $reading->night_value }}
-                </li>
-            @endforeach
-        </ul>
 
         <!-- Blood Pressure Chart -->
         <div class="mt-6">
@@ -90,7 +82,11 @@
     document.addEventListener("DOMContentLoaded", function () {
         // Prepare the data from Blade variables
         const readings = @json($readings); // Get the readings as a JavaScript object
-        const labels = readings.map(reading => reading.date);
+        const labels = data.map(reading => {
+        // Parse the date and format it to only include the date
+        const date = new Date(reading.date);
+        return date.toLocaleDateString('id-ID'); // Adjust locale as needed
+    });
         const systoleData = readings.map(reading => reading.morning_value_systole ?? reading.afternoon_value_systole ?? reading.night_value_systole);
         const diastoleData = readings.map(reading => reading.morning_value_diastole ?? reading.afternoon_value_diastole ?? reading.night_value_diastole);
 
@@ -119,7 +115,7 @@
                     },
                     {
                         // Red line at normal blood pressure
-                        label: 'Normal Blood Pressure',
+                        label: 'Normal Systolic Pressure',
                         data: new Array(labels.length).fill(120),
                         borderColor: 'rgba(255, 0, 0, 0.6)',
                         borderDash: [5, 5], // dashed line

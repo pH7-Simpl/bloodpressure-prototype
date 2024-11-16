@@ -42,6 +42,9 @@ Route::middleware('auth:pasien')->group(function () {
 
 Route::middleware('auth:dokter')->group(function () {
     Route::get('/dokter/dashboard', [DokterController::class, 'dashboard'])->name('dokter.dashboard');
+    Route::get('/manage-patients', [DokterController::class, 'managePatients'])->name('dokter.managePatients');
+    Route::post('/add-patient/{id}', [DokterController::class, 'addPatient'])->name('dokter.addPatient');
+    Route::post('/remove-patient/{id}', [DokterController::class, 'removePatient'])->name('dokter.removePatient');
 });
 
 Route::middleware('auth:kader')->group(function () {

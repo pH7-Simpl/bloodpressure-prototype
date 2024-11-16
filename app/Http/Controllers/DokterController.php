@@ -43,5 +43,40 @@ class DokterController extends Controller
     public function dashboard() {
         return view('dokter.dashboard');
     }
+
+    public function managePatients()
+    {
+        $dokterId = auth()->user()->id;
+
+        // Get patients assigned to the logged-in dokter
+        $assignedPatients = Pasien::where('dokter_id', $dokterId)->get();
+
+        // Get unassigned patients
+        $unassignedPatients = Pasien::whereNull('dokter_id')->get();
+
+        return view('dokter.manage-patients', compact('assignedPatients', 'unassignedPatients'));
+    }
+
+    public function addPatient($id)
+    {
+        $patient = Pasien::findOrFail($id);
+
+        // Assign the logged-in dokter
+        $patient->dokter_id = auth()->user()->id;
+        $patient->save();
+
+        return redirect()->route('dokter.managePatients')->with('success', 'Patient assigned successfully.');
+    }
+
+    public function removePatient($id)
+    {
+        $patient = Pasien::findOrFail($id);
+
+        // Unassign the dokter
+        $patient->dokter_id = null;
+        $patient->save();
+
+        return redirect()->route('dokter.managePatients')->with('success', 'Patient unassigned successfully.');
+    }
     
 }
