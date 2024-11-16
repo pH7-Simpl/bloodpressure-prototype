@@ -78,6 +78,7 @@
 @endsection
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // Prepare the data from Blade variables
