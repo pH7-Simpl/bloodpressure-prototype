@@ -12,7 +12,7 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link>
+                    <x-nav-link class="mb-6" href="{{ route('kader.dashboard') }}" class="text-blue-500 hover:underline">
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
