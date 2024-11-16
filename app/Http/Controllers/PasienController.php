@@ -24,26 +24,35 @@ class PasienController extends Controller
         // Pass the readings to the view
         return view('pasien.blood_pressure_data', compact('readings'));
     }
-    public function home() {
+    public function home()
+    {
         $pasien = Auth::guard('pasien')->user();
-    
-        // Retrieve the blood pressure readings for the Lansia user
+
+        // Retrieve the blood pressure readings for the patient
         $readings = BloodPressureReading::where('pasien_id', $pasien->id)
             ->orderBy('date', 'asc') // Sort by most recent reading
             ->get();
 
+        // Retrieve the medicines for the patient and filter out expired ones
         $medicines = Medicine::where('pasien_id', $pasien->id)
+            ->where(function ($query) {
+                $query->where('end_date', '>=', now()) // Only include medicines where end date is in the future or not set
+                    ->orWhereNull('end_date');
+            })
             ->orderBy('start_date', 'asc') // Sort by the most recent start date
             ->get();
 
-        // Retrieve the appointments for the Lansia user
+        // Retrieve the appointments for the patient and filter out expired ones
         $appointments = Appointment::where('pasien_id', $pasien->id)
+            ->where('appointment_date', '>=', now()) // Only include appointments where appointment date is in the future
             ->orderBy('appointment_date', 'asc') // Sort by the nearest appointment date
             ->get();
 
-        $kader = $pasien->kader;
+        // Retrieve the Kader (community health worker) assigned to the patient
+        $kader = $pasien->kader; // Assuming Pasien has a 'kader' relationship
 
-        // Pass the readings to the view
-        return view('pasien.home', compact('readings', 'medicines', 'appointments','kader'));
+        // Pass the data to the view
+        return view('pasien.home', compact('readings', 'medicines', 'appointments', 'kader'));
     }
+
 }

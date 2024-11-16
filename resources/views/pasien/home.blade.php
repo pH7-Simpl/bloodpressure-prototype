@@ -3,11 +3,13 @@
 @section('content')
 <div class="container mx-auto mt-6 p-6 bg-white shadow-md rounded-lg bg-no-repeat">
     <h1 class="text-3xl font-bold text-gray-800 mb-4">Welcome, {{ Auth::guard('pasien')->user()->nama }} to your Dashboard!</h1>
+    
     @if($kader)
         <p class="text-lg text-gray-600 mb-4">Your assigned Kader: <strong>{{ $kader->nama }}</strong></p>
     @else
         <p class="text-lg text-gray-600 mb-4">You do not have an assigned Kader yet.</p>
     @endif
+
     <p class="text-lg text-gray-600 mb-8">Here, you can view your health data, appointments, and receive suggestions for maintaining your well-being.</p>
     
     <!-- Blood Pressure Chart -->
@@ -28,7 +30,7 @@
     <div class="mb-8">
         <h2 class="text-2xl font-semibold text-gray-800 mb-4">Prescribed Medicines</h2>
         @if($medicines->isEmpty())
-            <p class="text-gray-600">No medicines have been prescribed to you.</p>
+            <p class="text-gray-600">No active medicines have been prescribed to you.</p>
         @else
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($medicines as $medicine)
