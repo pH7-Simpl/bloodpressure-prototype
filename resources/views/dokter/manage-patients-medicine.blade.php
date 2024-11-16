@@ -4,7 +4,7 @@
 @section('content')
 <div class="min-h-screen bg-cover bg-center flex justify-center items-center" style="background-image: url('{{ asset('images/rl.jpg') }}');">
     <div class="max-w-4xl mt-6 w-full bg-white p-6 rounded-lg shadow-lg">
-        <h1 class="text-3xl font-semibold text-gray-800 mb-4">Managed Patients</h1>
+        <h1 class="text-3xl font-semibold text-gray-800 mb-4">Manage Medicines for Patients</h1>
         <!-- Display Patients -->
         <div class="space-y-4">
             @foreach($pasiens as $pasien)
