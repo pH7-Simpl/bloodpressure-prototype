@@ -7,6 +7,7 @@ use App\Models\Pasien; // Import Pasien model
 use App\Models\BloodPressureReading;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Pagination\Paginator;
 
 class KaderController extends Controller
 {
@@ -104,6 +105,21 @@ public function deleteBloodPressure($id)
                      ->with('success', 'Blood pressure reading deleted successfully.');
 }
 
+public function nameSearch(Request $request)
+{
+    $search = $request->get('search');
+
+    if ($search) {
+        $unassignedPatients = Pasien::whereNull('kader_id')
+            ->where('nama', 'LIKE', '%' . $search . '%')
+            ->paginate(10); // Paginate results based on search
+    } else {
+        $unassignedPatients = Pasien::whereNull('kader_id')->paginate(10); // Default to pagination without search
+    }
+
+    return view('kader.dashboard', compact('unassignedPatients'));
+}
+
 public function addPatientToKader($patient_id)
     {
         // Find the patient by ID
@@ -119,7 +135,7 @@ public function addPatientToKader($patient_id)
         }
 
         return redirect()->route('kader.dashboard')->with('error', 'This patient is already assigned to another kader.');
-    }
+    }    
 
     public function unassignPatient($patient_id)
 {
@@ -138,12 +154,21 @@ public function addPatientToKader($patient_id)
     return redirect()->route('kader.dashboard')->with('error', 'You do not have permission to unassign this patient.');
 }
 
-    public function dashboard() {
-        $unassignedPatients  = Pasien::whereNull('kader_id')->get();
-        $supervisedPatients  = auth()->guard('kader')->user()->pasiens;
-    
-        // Return the view with patients data
-        return view('kader.dashboard', compact('supervisedPatients', 'unassignedPatients'));
+public function dashboard(Request $request) {
+    // Search logic for Add Patients to Your Supervision
+    $search = $request->get('search');
+    if ($search) {
+        $unassignedPatients = Pasien::whereNull('kader_id')
+            ->where('nama', 'LIKE', '%' . $search . '%')
+            ->paginate(10); // Paginate the unassigned patients
+    } else {
+        $unassignedPatients = Pasien::whereNull('kader_id')->paginate(10); // Paginate the unassigned patients
     }
+
+    // Fetch supervised patients for Edit Blood Pressure Readings
+    $supervisedPatients = auth()->guard('kader')->user()->pasiens()->paginate(10); // Paginate supervised patients
+
+    return view('kader.dashboard', compact('supervisedPatients', 'unassignedPatients'));
+}
 }
 

@@ -1,30 +1,32 @@
 @extends('layouts.appdokter')
 @section('content')
 <!-- Blood Pressure Readings Section -->
-<div class="mb-8">
-    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Patient Blood Pressure Readings</h2>
-    <p class="text-gray-600 mb-4">Here, you can view the blood pressure readings of patients assigned to
-        you.</p>
+<div class="min-h-screen flex items-center justify-center">
+    <div class="mb-8 max-w-4xl mt-6 w-full bg-white p-6 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Patient Blood Pressure Readings</h2>
+        <p class="text-gray-600 mb-4">Here, you can view the blood pressure readings of patients assigned to
+            you.</p>
 
-    <!-- Dropdown for viewing registered patients -->
-    <div class="mb-4">
-        <label for="patient-dropdown" class="block text-gray-700 font-medium mb-2">View Patients' Blood
-            Pressure</label>
-        <select id="patient-dropdown"
-            class="w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-            <option value="" disabled selected>Select a Patient</option>
-            @foreach ($assignedPatients as $patient)
-                <option value="{{ $patient->id }}">{{ $patient->nama }}</option>
-            @endforeach
-        </select>
+        <!-- Dropdown for viewing registered patients -->
+        <div class="mb-4">
+            <label for="patient-dropdown" class="block text-gray-700 font-medium mb-2">View Patients' Blood
+                Pressure</label>
+            <select id="patient-dropdown"
+                class="w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                <option value="" disabled selected>Select a Patient</option>
+                @foreach ($assignedPatients as $patient)
+                    <option value="{{ $patient->id }}">{{ $patient->nama }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <!-- Chart Container -->
+        <div id="chart-container" class="mt-8 hidden">
+            <h2 class="text-xl font-semibold mb-4">Blood Pressure Chart</h2>
+            <canvas id="bloodPressureChart"></canvas>
+        </div>
+
     </div>
-
-    <!-- Chart Container -->
-    <div id="chart-container" class="mt-8 hidden">
-        <h2 class="text-xl font-semibold mb-4">Blood Pressure Chart</h2>
-        <canvas id="bloodPressureChart"></canvas>
-    </div>
-
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -60,10 +62,10 @@
                     .then(response => response.json())
                     .then(data => {
                         const labels = data.map(reading => {
-        // Parse the date and format it to only include the date
-        const date = new Date(reading.date);
-        return date.toLocaleDateString('id-ID'); // Adjust locale as needed
-    });
+                            // Parse the date and format it to only include the date
+                            const date = new Date(reading.date);
+                            return date.toLocaleDateString('id-ID'); // Adjust locale as needed
+                        });
                         const systoleData = data.map(reading => reading.morning_value_systole ?? reading.afternoon_value_systole ?? reading.night_value_systole);
                         const diastoleData = data.map(reading => reading.morning_value_diastole ?? reading.afternoon_value_diastole ?? reading.night_value_diastole);
 

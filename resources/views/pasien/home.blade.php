@@ -1,11 +1,15 @@
 @extends('layouts.apppasien')
 
 @section('content')
-<div class="container mx-auto mt-6 p-6 bg-white shadow-md rounded-lg">
+<div class="container mx-auto mt-6 p-6 bg-white shadow-md rounded-lg bg-no-repeat">
     <h1 class="text-3xl font-bold text-gray-800 mb-4">Welcome, {{ Auth::guard('pasien')->user()->nama }} to your Dashboard!</h1>
     <p class="text-lg text-gray-600 mb-8">Here, you can view your health data, appointments, and receive suggestions for maintaining your well-being.</p>
-
-    @if($readings->isEmpty())
+    
+    <!-- Blood Pressure Chart -->
+    <div class="mb-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Your Blood Pressure Chart</h2>
+        <div id="chart-container" class="mt-8">
+        @if($readings->isEmpty())
         <p class="text-gray-600">No blood pressure readings available yet.</p>
     @else
 
@@ -14,11 +18,6 @@
             <canvas id="bloodPressureChart"></canvas>
         </div>
     @endif
-    <!-- Blood Pressure Chart -->
-    <div class="mb-8">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Your Blood Pressure Chart</h2>
-        <div id="chart-container" class="mt-8">
-            <canvas id="bloodPressureChart"></canvas>
         </div>
     </div>
 
@@ -83,7 +82,7 @@
     document.addEventListener("DOMContentLoaded", function () {
         // Prepare the data from Blade variables
         const readings = @json($readings); // Get the readings as a JavaScript object
-        const labels = data.map(reading => {
+        const labels = readings.map(reading => {
         // Parse the date and format it to only include the date
         const date = new Date(reading.date);
         return date.toLocaleDateString('id-ID'); // Adjust locale as needed

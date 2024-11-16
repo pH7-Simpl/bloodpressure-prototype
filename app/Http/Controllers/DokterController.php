@@ -38,18 +38,31 @@ class DokterController extends Controller
         return view('dokter.dashboard');
     }
 
-    public function managePatients()
-    {
-        $dokterId = auth()->user()->id;
+    public function managePatients(Request $request)
+{
+    $dokterId = auth()->user()->id;
 
-        // Get patients assigned to the logged-in dokter
-        $assignedPatients = Pasien::where('dokter_id', $dokterId)->get();
+    // Get the search queries for assigned and unassigned patients
+    $assignedSearch = $request->input('assigned_search');
+    $unassignedSearch = $request->input('unassigned_search');
 
-        // Get unassigned patients
-        $unassignedPatients = Pasien::whereNull('dokter_id')->get();
+    // Fetch assigned patients with pagination and search filter
+    $assignedPatients = Pasien::where('dokter_id', $dokterId)
+                                ->when($assignedSearch, function($query, $assignedSearch) {
+                                    return $query->where('nama', 'like', "%{$assignedSearch}%");
+                                })
+                                ->paginate(10); // Pagination, 10 patients per page
 
-        return view('dokter.manage-patients', compact('assignedPatients', 'unassignedPatients'));
-    }
+    // Fetch unassigned patients with pagination and search filter
+    $unassignedPatients = Pasien::whereNull('dokter_id')
+                                ->when($unassignedSearch, function($query, $unassignedSearch) {
+                                    return $query->where('nama', 'like', "%{$unassignedSearch}%");
+                                })
+                                ->paginate(10); // Pagination, 10 patients per page
+
+    return view('dokter.manage-patients', compact('assignedPatients', 'unassignedPatients', 'assignedSearch', 'unassignedSearch'));
+}
+
 
     public function addPatient($id)
     {

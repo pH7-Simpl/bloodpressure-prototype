@@ -1,7 +1,7 @@
 @extends('layouts.appdokter')
 
 @section('content')
-<div class="min-h-screen bg-cover bg-center flex justify-center items-center" style="background-image: url('{{ asset('images/rl.jpg') }}');">
+<div class="min-h-screen bg-cover bg-center flex justify-center items-center bg-no-repeat" style="background-image: url('{{ asset('images/rl.jpg') }}');">
     <div class="max-w-4xl mt-6 w-full bg-white p-6 rounded-lg shadow-lg">
         <h1 class="text-3xl font-semibold text-gray-800 mb-4">Edit Medicine for {{ $pasien->nama }}</h1>
 

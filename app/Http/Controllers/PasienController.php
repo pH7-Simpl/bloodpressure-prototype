@@ -29,11 +29,11 @@ class PasienController extends Controller
     
         // Retrieve the blood pressure readings for the Lansia user
         $readings = BloodPressureReading::where('pasien_id', $pasien->id)
-            ->orderBy('date', 'desc') // Sort by most recent reading
+            ->orderBy('date', 'asc') // Sort by most recent reading
             ->get();
 
         $medicines = Medicine::where('pasien_id', $pasien->id)
-            ->orderBy('start_date', 'desc') // Sort by the most recent start date
+            ->orderBy('start_date', 'asc') // Sort by the most recent start date
             ->get();
 
         // Retrieve the appointments for the Lansia user

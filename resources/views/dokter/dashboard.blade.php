@@ -1,10 +1,14 @@
-<!-- resources/views/dokter/dashboard.blade.php -->
 @extends('layouts.appdokter')
 
 @section('content')
-<div class="min-h-screen bg-cover bg-center flex justify-center items-center" style="background-image: url('{{ asset('images/rl.jpg') }}');">
+<div class="min-h-screen bg-cover bg-center flex justify-center items-center bg-no-repeat" style="background-image: url('{{ asset('images/rl.jpg') }}');">
     <div class="max-w-4xl mt-6 w-full bg-white p-6 rounded-lg shadow-lg">
-        <h1 class="text-3xl font-semibold text-gray-800 mb-4">Welcome Dr. {{ Auth::guard('dokter')->user()->nama }} to the Dokter Dashboard</h1>
+        <div class="flex items-center justify-between mb-4">
+            <h1 class="text-3xl font-semibold text-gray-800">Welcome Dr. {{ Auth::guard('dokter')->user()->nama }} to the Dokter Dashboard</h1>
+            <a href="{{ route('dokter.managePatients') }}" class="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition">
+                Manage Patient
+            </a>
+        </div>
         <p class="text-gray-600 mb-6">As a doctor, you can manage patient data, view blood pressure readings, and more.</p>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
@@ -30,12 +34,7 @@
                 <h3 class="text-xl font-medium text-gray-800 mb-2">View Appointments</h3>
                 <p class="text-gray-600">Check and manage upcoming patient appointments.</p>
                 <a href="#" class="text-purple-500 hover:underline mt-2 inline-block">Go to Appointments</a>
-            </div>
-            <div class="bg-purple-100 p-4 rounded-lg shadow-md hover:bg-purple-200 transition">
-                <h3 class="text-xl font-medium text-gray-800 mb-2">Add Patient To Manage</h3>
-                <p class="text-gray-600">Check and manage patient to be monitored.</p>
-                <a href="{{ route('dokter.managePatients') }}" class="text-purple-500 hover:underline mt-2 inline-block">Go to Add</a>
-            </div>
+            </div>            
         </div>
     </div>
 </div>
