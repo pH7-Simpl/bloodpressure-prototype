@@ -53,6 +53,16 @@ class DokterController extends Controller
 
     return redirect()->route('dokter.profile')->with('success', 'Profile updated successfully!');
 }
+public function deleteAccount()
+{
+    $dokter = auth()->guard('dokter')->user();
+
+    // Delete the authenticated doctor's account
+    $dokter->delete();
+
+    // Redirect to login or home page with a success message
+    return redirect('/')->with('success', 'Your account has been deleted successfully.');
+}
 
     public function prescribeMedicine(Request $request, $pasienId)
     {

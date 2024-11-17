@@ -48,6 +48,16 @@ class PasienController extends Controller
 
     return redirect()->route('pasien.profile')->with('success', 'Profile updated successfully!');
 }
+public function deleteAccount()
+{
+    $pasien = auth()->guard('pasien')->user();
+
+    // Delete the authenticated patient's account
+    $pasien->delete();
+
+    // Redirect to home page or login page with a success message
+    return redirect('/')->with('success', 'Your account has been deleted successfully.');
+}
     public function showBloodPressureData($patient_id)
     {
         // Fetch blood pressure readings for the specific patient

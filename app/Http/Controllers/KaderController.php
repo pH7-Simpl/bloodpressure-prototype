@@ -51,6 +51,16 @@ class KaderController extends Controller
 
     return redirect()->route('kader.profile')->with('success', 'Profile updated successfully!');
 }
+public function deleteAccount()
+{
+    $kader = auth()->guard('kader')->user();
+
+    // Delete the authenticated kader's account
+    $kader->delete();
+
+    // Redirect to login or home page with a success message
+    return redirect('/')->with('success', 'Your account has been deleted successfully.');
+}
 
     public function editPatientBloodPressure($id)
 {
