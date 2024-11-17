@@ -12,6 +12,42 @@ use Illuminate\Support\Facades\Auth;
 
 class PasienController extends Controller
 {
+    public function showProfile()
+    {
+        $pasien = auth()->guard('pasien')->user(); // Assuming authenticated user is a Dokter
+
+        return view('pasien.profile', compact('pasien'));
+    }
+
+    public function updateProfile(Request $request)
+{
+    $pasien = auth()->guard('pasien')->user();
+
+    // Validate the request data
+    $request->validate([
+        'nama' => 'required|string|max:255',
+        'nik' => 'required|numeric',
+        'tempat_lahir' => 'required|string',
+        'tanggal_lahir' => 'required|date',
+        'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+        'agama' => 'required|string',
+        'golongan_darah' => 'required|string',
+        'no_handphone' => 'required|string',
+        'alamat' => 'required|string',
+        'provinsi' => 'required|string',
+        'kab_kota' => 'required|string',
+        'kecamatan' => 'required|string',
+        'email' => 'required|email',
+        'password' => 'nullable|string|min:8|confirmed',
+        'kategori_pasien' => 'required|in:Umum,BPJS',
+        'no_bpjs' => 'required|string',
+    ]);
+
+    // Update the Dokter model with the validated data
+    $pasien->update($request->all());
+
+    return redirect()->route('pasien.profile')->with('success', 'Profile updated successfully!');
+}
     public function showBloodPressureData($patient_id)
     {
         // Fetch blood pressure readings for the specific patient

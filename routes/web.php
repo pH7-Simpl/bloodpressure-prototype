@@ -37,11 +37,15 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth:pasien')->group(function () {
     Route::get('/pasien/home', [PasienController::class, 'home'])->name('pasien.home');
+    Route::get('/pasien/profile', [PasienController::class, 'showProfile'])->name('pasien.profile');
+    Route::post('/pasien/customupdateprofile', [PasienController::class, 'updateProfile'])->name('pasien.updateprofile');
     Route::get('/pasien/{id}/blood-pressure-data', [PasienController::class, 'showBloodPressureData']);
 });
 
 Route::middleware('auth:dokter')->group(function () {
     Route::get('/dokter/dashboard', [DokterController::class, 'dashboard'])->name('dokter.dashboard');
+    Route::get('/dokter/profile', [DokterController::class, 'showProfile'])->name('dokter.profile');
+    Route::post('/dokter/customupdateprofile', [DokterController::class, 'updateProfile'])->name('dokter.updateprofile');
     Route::get('/manage-patients', [DokterController::class, 'managePatients'])->name('dokter.managePatients');
     Route::post('/add-patient/{id}', [DokterController::class, 'addPatient'])->name('dokter.addPatient');
     Route::post('/remove-patient/{id}', [DokterController::class, 'removePatient'])->name('dokter.removePatient');
@@ -72,6 +76,8 @@ Route::middleware('auth:dokter')->group(function () {
 
 Route::middleware('auth:kader')->group(function () {
     Route::get('/kader/dashboard', [KaderController::class, 'dashboard'])->name('kader.dashboard');
+    Route::get('/kader/profile', [KaderController::class, 'showProfile'])->name('kader.profile');
+    Route::post('/kader/customupdateprofile', [KaderController::class, 'updateProfile'])->name('kader.updateprofile');
     Route::get('/kader/patient/{id}', [KaderController::class, 'viewPatient'])->name('kader.view_patient');
     Route::get('/kader/patient/{id}/blood-pressure', [KaderController::class, 'editPatientBloodPressure'])->name('kader.editPatientBloodPressure');
     Route::get('/kader/patient/{id}/blood-pressure-data', [KaderController::class, 'getBloodPressureData']);

@@ -13,6 +13,47 @@ use App\Models\Pasien;
 
 class DokterController extends Controller
 {
+    public function showProfile()
+    {
+        $dokter = auth()->guard('dokter')->user(); // Assuming authenticated user is a Dokter
+
+        return view('dokter.profile', compact('dokter'));
+    }
+
+    public function updateProfile(Request $request)
+{
+    $dokter = auth()->guard('dokter')->user();
+
+    // Validate the request data
+    $request->validate([
+        'nama' => 'required|string|max:255',
+        'nik' => 'required|numeric',
+        'tempat_lahir' => 'required|string',
+        'tanggal_lahir' => 'required|date',
+        'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+        'agama' => 'required|string',
+        'golongan_darah' => 'required|string',
+        'no_handphone' => 'required|string',
+        'alamat' => 'required|string',
+        'provinsi' => 'required|string',
+        'kab_kota' => 'required|string',
+        'kecamatan' => 'required|string',
+        'email' => 'required|email',
+        'password' => 'nullable|string|min:8|confirmed',
+    ]);
+
+    // Update the Dokter model with the validated data
+    $dokter->update($request->all());
+
+    // If a new password is provided, hash it before updating
+    if ($request->filled('password')) {
+        $dokter->password = bcrypt($request->password);
+        $dokter->save();
+    }
+
+    return redirect()->route('dokter.profile')->with('success', 'Profile updated successfully!');
+}
+
     public function prescribeMedicine(Request $request, $pasienId)
     {
         // Validate the incoming request data

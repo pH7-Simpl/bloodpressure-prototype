@@ -11,6 +11,46 @@ use Illuminate\Pagination\Paginator;
 
 class KaderController extends Controller
 {
+    public function showProfile()
+    {
+        $kader = auth()->guard('kader')->user(); // Assuming authenticated user is a Dokter
+
+        return view('kader.profile', compact('kader'));
+    }
+
+    public function updateProfile(Request $request)
+{
+    $kader = auth()->guard('kader')->user();
+
+    // Validate the request data
+    $request->validate([
+        'nama' => 'required|string|max:255',
+        'nik' => 'required|numeric',
+        'tempat_lahir' => 'required|string',
+        'tanggal_lahir' => 'required|date',
+        'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+        'agama' => 'required|string',
+        'golongan_darah' => 'required|string',
+        'no_handphone' => 'required|string',
+        'alamat' => 'required|string',
+        'provinsi' => 'required|string',
+        'kab_kota' => 'required|string',
+        'kecamatan' => 'required|string',
+        'email' => 'required|email',
+        'password' => 'nullable|string|min:8|confirmed',
+    ]);
+
+    // Update the Dokter model with the validated data
+    $kader->update($request->all());
+
+    // If a new password is provided, hash it before updating
+    if ($request->filled('password')) {
+        $kader->password = bcrypt($request->password);
+        $kader->save();
+    }
+
+    return redirect()->route('kader.profile')->with('success', 'Profile updated successfully!');
+}
 
     public function editPatientBloodPressure($id)
 {
@@ -167,14 +207,14 @@ public function dashboard(Request $request) {
     }
 
     // Fetch supervised patients for Edit Blood Pressure Readings
-    $supervisedPatients = auth()->guard('kader')->user()->pasiens()->paginate(10, ['*'], 'supervised_patients'); // Paginate supervised patients
     $assignedPatients = Pasien::where('kader_id', $kaderId)
             ->when($assignedSearch, function ($query, $assignedSearch) {
                 return $query->where('nama', 'like', "%{$assignedSearch}%");
             })
             ->paginate(10, ['*'], 'assigned_patients');
+    $allAssignedPatients = Pasien::where('kader_id', $kaderId)->get();
 
-    return view('kader.dashboard', compact('supervisedPatients', 'unassignedPatients', 'assignedPatients', 'unassignedPatients', 'assignedSearch'));
+    return view('kader.dashboard', compact('allAssignedPatients', 'unassignedPatients', 'assignedPatients', 'unassignedPatients', 'assignedSearch'));
 }
 }
 

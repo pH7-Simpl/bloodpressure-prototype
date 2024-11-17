@@ -103,6 +103,7 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
+        Log::info($request);
         // Validate input
         $request->validate([
             'name' => 'required|string|max:255',
@@ -118,7 +119,7 @@ class AuthController extends Controller
             'kabupaten_kota' => 'required|string',
             'kecamatan' => 'required|string',
             'email' => 'required|email',
-            'password' => 'required|string|min:8|confirmed', // Password for Dokter and Kader only
+            'password' => $request->role !== 'pasien' ? 'required|string|min:8|confirmed' : 'nullable',
         ]);
 
         // Create the user based on the role
@@ -173,6 +174,8 @@ class AuthController extends Controller
                 'kab_kota' => $request->kabupaten_kota,
                 'kecamatan' => $request->kecamatan,
                 'email' => $request->email,
+                'kategori_pasien' => $request->kategori_pasien,
+                'no_bpjs' => $request->no_bpjs,
             ]);
             return redirect()->route('pasien.home');
         }
