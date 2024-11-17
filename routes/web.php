@@ -20,7 +20,7 @@ Route::post('/customregister', [AuthController::class, 'register'])->name('custo
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/customlogin', [AuthController::class, 'login'])->name('customlogin');
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/customlogout', [AuthController::class, 'logout'])->name('customlogout');
 
 // Password authentication for Dokter and Kader
 Route::post('/authenticate', [AuthController::class, 'authenticate'])->name('authenticate');

@@ -70,22 +70,24 @@
         @endif
     </div>
 
-    <!-- Suggestions Section -->
+    <!-- Suggestion Section -->
     <div class="mb-8">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Health Suggestions</h2>
-        <p class="text-gray-600">Here are some health tips for you to stay in good shape:</p>
-        <ul class="list-disc ml-5 space-y-2 text-gray-600">
-            <li>Stay hydrated by drinking plenty of water.</li>
-            <li>Take your medication as prescribed by your doctor.</li>
-            <li>Maintain a balanced diet and exercise regularly.</li>
-        </ul>
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Suggestion from the Doctor</h2>
+        @if($suggestions->isEmpty())
+            <p class="text-gray-600">You don't have any suggestions yet.</p>
+        @else
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @foreach($suggestions as $suggestion)
+                    <div class="bg-yellow-100 p-4 rounded-lg shadow-lg">
+                        <h3 class="font-semibold text-lg text-yellow-700">{{ $suggestion->title }}</h3>
+                        <p class="text-gray-700">Date: {{ $suggestion->suggestion_date }}</p>
+                        <p class="text-gray-600">Doctor: Dr. {{ $suggestion->dokter->nama }}</p>
+                        <p class="text-gray-600">Suggestion: {{ $suggestion->content }}</p>
+                    </div>
+                @endforeach
+            </div>
+        @endif
     </div>
-
-    <!-- Logout Button -->
-    <form action="{{ route('logout') }}" method="POST">
-        @csrf
-        <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-200 font-semibold">Logout</button>
-    </form>
 </div>
 @endsection
 

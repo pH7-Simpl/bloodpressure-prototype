@@ -6,6 +6,7 @@ use App\Models\Pasien;
 use App\Models\BloodPressureReading;
 use App\Models\Medicine;
 use App\Models\Appointment;
+use App\Models\Suggestion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -48,11 +49,12 @@ class PasienController extends Controller
             ->orderBy('appointment_date', 'asc') // Sort by the nearest appointment date
             ->get();
 
-        // Retrieve the Kader (community health worker) assigned to the patient
-        $kader = $pasien->kader; // Assuming Pasien has a 'kader' relationship
+        $suggestions = Suggestion::where('pasien_id', $pasien->id)
+            ->orderBy('suggestion_date', 'asc')
+            ->get();
 
-        // Pass the data to the view
-        return view('pasien.home', compact('readings', 'medicines', 'appointments', 'kader'));
+        $kader = $pasien->kader;
+
+        return view('pasien.home', compact('readings', 'medicines', 'appointments', 'suggestions', 'kader'));
     }
-
 }

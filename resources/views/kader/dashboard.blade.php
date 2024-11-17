@@ -37,12 +37,14 @@
         <p class="text-gray-600 mb-4">Here, you can manage the blood pressure readings of patients assigned to you.</p>
 
         <!-- Search Form for Supervised Patients -->
-        <input type="text" id="supervised-search" placeholder="Search Assigned Patients"
-            class="border border-gray-300 px-4 py-2 rounded-md mb-4" />
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md ml-2">Search</button>
+        <form method="GET" action="{{ route('kader.dashboard') }}" class="mb-4">
+            <input type="text" name="assigned_search" value="{{ $assignedSearch ?? '' }}"
+                placeholder="Search Assigned Patients" class="px-4 py-2 border rounded-md" />
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md ml-2">Search</button>
+        </form>
 
         <ul class="list-disc ml-5 space-y-2" id="supervised-patient-list">
-            @foreach ($supervisedPatients as $patient)
+            @foreach ($assignedPatients as $patient)
                 <li class="text-gray-800">
                     {{ $patient->nama }}
                     <a href="{{ route('kader.editPatientBloodPressure', $patient->id) }}"
@@ -63,7 +65,7 @@
 
         <!-- Pagination Links -->
         <div class="mt-4">
-            {{ $supervisedPatients->links() }}
+            {{ $assignedPatients->links() }}
         </div>
     </div>
 
@@ -72,10 +74,12 @@
         <h2 class="text-2xl font-semibold text-gray-800 mb-4">Add Patients to Your Supervision</h2>
         <p class="text-gray-600 mb-4">Below are the patients that are not currently supervised by any kader.</p>
 
-        <!-- Search Form for Unassigned Patients -->
-        <input type="text" id="unassigned-search" placeholder="Search Unassigned Patients"
-            class="border border-gray-300 px-4 py-2 rounded-md mb-4" />
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md ml-2">Search</button>
+        <!-- Search Form -->
+        <form method="GET" action="{{ route('kader.dashboard') }}" class="mb-4">
+            <input type="text" name="search" value="{{ request()->get('search') }}" placeholder="Search by name"
+                class="border border-gray-300 px-4 py-2 rounded-md" />
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md">Search</button>
+        </form>
 
         @if ($unassignedPatients->isEmpty())
             <p>No patients available for assignment.</p>
@@ -119,44 +123,6 @@
 @endsection
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Ambil elemen input pencarian dan daftar pasien
-        const supervisedSearchInput = document.getElementById('supervised-search');
-        const supervisedPatientList = document.querySelectorAll('#supervised-patient-list li');
-
-        const unassignedSearchInput = document.getElementById('unassigned-search');
-        const unassignedPatientList = document.querySelectorAll('#unassigned-patient-list li');
-
-        // Fungsi untuk memfilter pasien berdasarkan pencarian
-        function filterPatients(searchInput, patientList) {
-            const searchTerm = searchInput.value.toLowerCase();
-
-            patientList.forEach(patient => {
-                const patientName = patient.textContent.toLowerCase();
-                if (patientName.includes(searchTerm)) {
-                    patient.style.display = ''; // Tampilkan jika cocok
-                } else {
-                    patient.style.display = 'none'; // Sembunyikan jika tidak cocok
-                }
-            });
-        }
-
-        // Event listener untuk pencarian pasien yang sudah diawasi
-        if (supervisedSearchInput) {
-            supervisedSearchInput.addEventListener('input', function () {
-                filterPatients(supervisedSearchInput, supervisedPatientList);
-            });
-        }
-
-        // Event listener untuk pencarian pasien yang belum diawasi
-        if (unassignedSearchInput) {
-            unassignedSearchInput.addEventListener('input', function () {
-                filterPatients(unassignedSearchInput, unassignedPatientList);
-            });
-        }
-    });
-</script>
 <script>document.addEventListener("DOMContentLoaded", function () {
         const searchInput = document.getElementById('search-patient');
         const patientDropdown = document.getElementById('patient-dropdown');

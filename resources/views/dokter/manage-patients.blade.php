@@ -89,41 +89,4 @@
         }
     }
 </script>
-<script>document.addEventListener('DOMContentLoaded', function () {
-        // Ambil elemen pencarian dan list pasien
-        const assignedSearchInput = document.querySelector('input[name="assigned_search"]');
-        const assignedPatientList = document.querySelectorAll('.assigned-patients li');
-
-        const unassignedSearchInput = document.querySelector('input[name="unassigned_search"]');
-        const unassignedPatientList = document.querySelectorAll('.unassigned-patients li');
-
-        // Fungsi untuk memfilter pasien
-        function filterPatients(searchInput, patientList) {
-            const searchTerm = searchInput.value.toLowerCase();
-
-            patientList.forEach(patient => {
-                const patientName = patient.textContent.toLowerCase();
-                if (patientName.includes(searchTerm)) {
-                    patient.style.display = ''; // Tampilkan jika cocok
-                } else {
-                    patient.style.display = 'none'; // Sembunyikan jika tidak cocok
-                }
-            });
-        }
-
-        // Event listener untuk pencarian assigned patients
-        if (assignedSearchInput) {
-            assignedSearchInput.addEventListener('input', function () {
-                filterPatients(assignedSearchInput, assignedPatientList);
-            });
-        }
-
-        // Event listener untuk pencarian unassigned patients
-        if (unassignedSearchInput) {
-            unassignedSearchInput.addEventListener('input', function () {
-                filterPatients(unassignedSearchInput, unassignedPatientList);
-            });
-        }
-    });
-</script>
 @endsection

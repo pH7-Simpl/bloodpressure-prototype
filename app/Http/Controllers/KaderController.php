@@ -18,7 +18,7 @@ class KaderController extends Controller
     $patient = auth()->guard('kader')->user()->pasiens()->findOrFail($id);
 
     // Fetch all blood pressure readings for the patient
-    $readings = $patient->bloodPressureReadings;
+    $readings = $patient->bloodPressureReadings()->orderBy('date', 'asc')->get();
 
     // Return a view to display the dates
     return view('kader.blood_pressure_dates', compact('patient', 'readings'));
@@ -112,9 +112,9 @@ public function nameSearch(Request $request)
     if ($search) {
         $unassignedPatients = Pasien::whereNull('kader_id')
             ->where('nama', 'LIKE', '%' . $search . '%')
-            ->paginate(10); // Paginate results based on search
+            ->paginate(10, ['*'], 'unassigned_patients'); // Paginate results based on search
     } else {
-        $unassignedPatients = Pasien::whereNull('kader_id')->paginate(10); // Default to pagination without search
+        $unassignedPatients = Pasien::whereNull('kader_id')->paginate(10, ['*'], 'unassigned_patients'); // Default to pagination without search
     }
 
     return view('kader.dashboard', compact('unassignedPatients'));
@@ -155,20 +155,26 @@ public function addPatientToKader($patient_id)
 }
 
 public function dashboard(Request $request) {
-    // Search logic for Add Patients to Your Supervision
+    $kaderId = auth()->user()->id;
+    $assignedSearch = $request->input('assigned_search');
     $search = $request->get('search');
     if ($search) {
         $unassignedPatients = Pasien::whereNull('kader_id')
             ->where('nama', 'LIKE', '%' . $search . '%')
-            ->paginate(10); // Paginate the unassigned patients
+            ->paginate(10, ['*'], 'unassigned_patients');
     } else {
-        $unassignedPatients = Pasien::whereNull('kader_id')->paginate(10); // Paginate the unassigned patients
+        $unassignedPatients = Pasien::whereNull('kader_id')->paginate(10, ['*'], 'unassigned_patients');
     }
 
     // Fetch supervised patients for Edit Blood Pressure Readings
-    $supervisedPatients = auth()->guard('kader')->user()->pasiens()->paginate(10); // Paginate supervised patients
+    $supervisedPatients = auth()->guard('kader')->user()->pasiens()->paginate(10, ['*'], 'supervised_patients'); // Paginate supervised patients
+    $assignedPatients = Pasien::where('kader_id', $kaderId)
+            ->when($assignedSearch, function ($query, $assignedSearch) {
+                return $query->where('nama', 'like', "%{$assignedSearch}%");
+            })
+            ->paginate(10, ['*'], 'assigned_patients');
 
-    return view('kader.dashboard', compact('supervisedPatients', 'unassignedPatients'));
+    return view('kader.dashboard', compact('supervisedPatients', 'unassignedPatients', 'assignedPatients', 'unassignedPatients', 'assignedSearch'));
 }
 }
 

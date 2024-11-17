@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('dokter_id')->constrained('dokters'); // Dokter who gives the suggestion
             $table->foreignId('pasien_id')->constrained('pasiens'); // Pasien who the suggestion is for
-            $table->dateTime('suggestion_date');
+            $table->string('title');
+            $table->date('suggestion_date');
             $table->text('content'); // The content of the suggestion
             $table->timestamps();
         });

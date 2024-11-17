@@ -14,10 +14,13 @@ return new class extends Migration
     Schema::create('blood_pressure_readings', function (Blueprint $table) {
         $table->id();
         $table->foreignId('pasien_id')->constrained('pasiens');
-        $table->dateTime('date');
-        $table->integer('morning_value')->nullable();
-        $table->integer('afternoon_value')->nullable();
-        $table->integer('night_value')->nullable();
+        $table->date('date');
+        $table->integer('morning_value_systole')->nullable();
+        $table->integer('morning_value_diastole')->nullable();
+        $table->integer('afternoon_value_systole')->nullable();
+        $table->integer('afternoon_value_diastole')->nullable();
+        $table->integer('night_value_systole')->nullable();
+        $table->integer('night_value_diastole')->nullable();
         $table->timestamps();
     });
 }

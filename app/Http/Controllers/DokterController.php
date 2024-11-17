@@ -69,21 +69,19 @@ public function searchUnassignedPatients(Request $request)
         // Get the search queries for assigned and unassigned patients
         $assignedSearch = $request->input('assigned_search');
         $unassignedSearch = $request->input('unassigned_search');
-
+        
         // Fetch assigned patients with pagination and search filter
         $assignedPatients = Pasien::where('dokter_id', $dokterId)
             ->when($assignedSearch, function ($query, $assignedSearch) {
                 return $query->where('nama', 'like', "%{$assignedSearch}%");
             })
-            ->paginate(10); // Pagination, 10 patients per page
-
+            ->paginate(10, ['*'], 'assigned_patients');
         // Fetch unassigned patients with pagination and search filter
         $unassignedPatients = Pasien::whereNull('dokter_id')
             ->when($unassignedSearch, function ($query, $unassignedSearch) {
                 return $query->where('nama', 'like', "%{$unassignedSearch}%");
             })
-            ->paginate(10); // Pagination, 10 patients per page
-
+            ->paginate(10, ['*'], 'unassigned_patients');
         return view('dokter.manage-patients', compact('assignedPatients', 'unassignedPatients', 'assignedSearch', 'unassignedSearch'));
     }
 
@@ -228,8 +226,6 @@ public function searchUnassignedPatients(Request $request)
 
         return redirect()->route('dokter.managepatientspecificmedicine', $patientId)->with('success', 'Medicine deleted successfully.');
     }
-
-    // --------------------------------------
     
     public function managePatientsSuggestions(Request $request)
     {
@@ -329,7 +325,7 @@ public function searchUnassignedPatients(Request $request)
 
         return redirect()->route('dokter.managepatientspecificsuggestion', $patientId)->with('success', 'Suggestion deleted successfully.');
     }
-    // --------------------------------------
+
     public function managePatientsAppointments(Request $request)
     {
         $dokterId = auth()->user()->id;

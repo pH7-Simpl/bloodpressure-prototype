@@ -11,6 +11,7 @@ use App\Models\Dokter;
 use App\Models\Kader;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
@@ -177,14 +178,14 @@ class AuthController extends Controller
         }
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
         Auth::logout();
         Auth::guard('pasien')->logout();
         Auth::guard('dokter')->logout();
         Auth::guard('kader')->logout();
-        session()->invalidate();
-        session()->regenerateToken();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return redirect()->route('login');
     }
 }
