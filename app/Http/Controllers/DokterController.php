@@ -10,6 +10,7 @@ use App\Models\Medicine;
 use App\Models\Suggestion;
 use App\Models\Appointment;
 use App\Models\Pasien;
+use Illuminate\Support\Facades\Log;
 
 class DokterController extends Controller
 {
@@ -24,10 +25,11 @@ class DokterController extends Controller
 {
     $dokter = auth()->guard('dokter')->user();
 
+    try {
     // Validate the request data
     $request->validate([
         'nama' => 'required|string|max:255',
-        'nik' => 'required|numeric',
+        'nik' => 'required|string',
         'tempat_lahir' => 'required|string',
         'tanggal_lahir' => 'required|date',
         'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
@@ -39,20 +41,41 @@ class DokterController extends Controller
         'kab_kota' => 'required|string',
         'kecamatan' => 'required|string',
         'email' => 'required|email',
-        'password' => 'nullable|string|min:8|confirmed',
+        'password' => 'nullable|string|min:8',
+    ]);
+} catch (\Illuminate\Validation\ValidationException $e) {
+    Log::error('Validation failed: ' . json_encode($e->errors()));
+    return redirect()->back()->withErrors($e->errors());
+}
+
+    // Prepare the update data
+    $updateData = $request->only([
+        'nama',
+        'nik',
+        'tempat_lahir',
+        'tanggal_lahir',
+        'jenis_kelamin',
+        'agama',
+        'golongan_darah',
+        'no_handphone',
+        'alamat',
+        'provinsi',
+        'kab_kota',
+        'kecamatan',
+        'email',
     ]);
 
-    // Update the Dokter model with the validated data
-    $dokter->update($request->all());
-
-    // If a new password is provided, hash it before updating
+    // Hash and add the password if provided
     if ($request->filled('password')) {
-        $dokter->password = bcrypt($request->password);
-        $dokter->save();
+        $updateData['password'] = bcrypt($request->password);
     }
+
+    // Update the Dokter model
+    $dokter->update($updateData);
 
     return redirect()->route('dokter.profile')->with('success', 'Profile updated successfully!');
 }
+
 public function deleteAccount()
 {
     $dokter = auth()->guard('dokter')->user();

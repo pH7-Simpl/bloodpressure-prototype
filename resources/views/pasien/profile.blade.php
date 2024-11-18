@@ -74,6 +74,24 @@
                 </div>
 
                 <div>
+                    <label for="provinsi" class="block font-semibold">Provinsi</label>
+                    <input type="text" name="provinsi" id="provinsi" value="{{ old('provinsi', $pasien->provinsi) }}"
+                        class="w-full border-gray-300 rounded-md">
+                </div>
+
+                <div>
+                    <label for="kab_kota" class="block font-semibold">Kabupaten/Kota</label>
+                    <input type="text" name="kab_kota" id="kab_kota" value="{{ old('kab_kota', $pasien->kab_kota) }}"
+                        class="w-full border-gray-300 rounded-md">
+                </div>
+
+                <div>
+                    <label for="kecamatan" class="block font-semibold">Kecamatan</label>
+                    <input type="text" name="kecamatan" id="kecamatan" value="{{ old('kecamatan', $pasien->kecamatan) }}"
+                        class="w-full border-gray-300 rounded-md">
+                </div>
+
+                <div>
                     <label for="alamat" class="block font-semibold">Alamat</label>
                     <input type="text" name="alamat" id="alamat" value="{{ old('alamat', $pasien->alamat) }}"
                         class="w-full border-gray-300 rounded-md">

@@ -9,6 +9,7 @@ use App\Models\Appointment;
 use App\Models\Suggestion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class PasienController extends Controller
 {
@@ -24,6 +25,7 @@ class PasienController extends Controller
     $pasien = auth()->guard('pasien')->user();
 
     // Validate the request data
+    try {
     $request->validate([
         'nama' => 'required|string|max:255',
         'nik' => 'required|numeric',
@@ -42,6 +44,10 @@ class PasienController extends Controller
         'kategori_pasien' => 'required|in:Umum,BPJS',
         'no_bpjs' => 'required|string',
     ]);
+} catch (\Illuminate\Validation\ValidationException $e) {
+    Log::error('Validation failed: ' . json_encode($e->errors()));
+    return redirect()->back()->withErrors($e->errors());
+}
 
     // Update the Dokter model with the validated data
     $pasien->update($request->all());

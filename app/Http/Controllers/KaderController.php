@@ -39,15 +39,30 @@ class KaderController extends Controller
         'email' => 'required|email',
         'password' => 'nullable|string|min:8|confirmed',
     ]);
+    // Prepare the update data
+    $updateData = $request->only([
+        'nama',
+        'nik',
+        'tempat_lahir',
+        'tanggal_lahir',
+        'jenis_kelamin',
+        'agama',
+        'golongan_darah',
+        'no_handphone',
+        'alamat',
+        'provinsi',
+        'kab_kota',
+        'kecamatan',
+        'email',
+    ]);
+
+    // Hash and add the password if provided
+    if ($request->filled('password')) {
+        $updateData['password'] = bcrypt($request->password);
+    }
 
     // Update the Dokter model with the validated data
-    $kader->update($request->all());
-
-    // If a new password is provided, hash it before updating
-    if ($request->filled('password')) {
-        $kader->password = bcrypt($request->password);
-        $kader->save();
-    }
+    $kader->update($updateData);
 
     return redirect()->route('kader.profile')->with('success', 'Profile updated successfully!');
 }
