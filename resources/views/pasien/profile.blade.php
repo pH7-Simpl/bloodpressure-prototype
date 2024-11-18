@@ -111,7 +111,7 @@
                     </select>
                 </div>
 
-                <div>
+                <div id="no_bpjs_field" style="display: none;">
                     <label for="no_bpjs" class="block font-semibold">Nomor BPJS</label>
                     <input type="text" name="no_bpjs" id="no_bpjs" value="{{ old('no_bpjs', $pasien->no_bpjs) }}"
                         class="w-full border-gray-300 rounded-md">
@@ -138,4 +138,27 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const kategoriPasienSelect = document.getElementById('kategori_pasien');
+        const noBpjsField = document.getElementById('no_bpjs_field');
+
+        // Function to toggle the visibility of the "Nomor BPJS" field
+        function toggleBpjsField() {
+            if (kategoriPasienSelect.value === 'BPJS') {
+                noBpjsField.style.display = 'block';
+                document.querySelector('[name="no_bpjs"]').setAttribute('required', 'required');
+            } else {
+                noBpjsField.style.display = 'none';
+                document.querySelector('[name="no_bpjs"]').removeAttribute('required');
+            }
+        }
+
+        // Initial check on page load
+        toggleBpjsField();
+
+        // Add event listener for change events
+        kategoriPasienSelect.addEventListener('change', toggleBpjsField);
+    });
+</script>
 @endsection

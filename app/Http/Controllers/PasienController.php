@@ -52,7 +52,7 @@ class PasienController extends Controller
         'email' => 'required|email',
         'password' => 'nullable|string|min:8|confirmed',
         'kategori_pasien' => 'required|in:Umum,BPJS',
-        'no_bpjs' => 'required|string',
+        'no_bpjs' => $request->kategori_pasien === 'BPJS' ? 'required|string' : 'nullable',
     ]);
 } catch (\Illuminate\Validation\ValidationException $e) {
     Log::error('Validation failed: ' . json_encode($e->errors()));
