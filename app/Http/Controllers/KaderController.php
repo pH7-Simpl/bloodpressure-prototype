@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Pasien; // Import Pasien model
 use App\Models\BloodPressureReading;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Pagination\Paginator;
 use App\Rules\UniqueAcrossTables;
@@ -75,6 +76,27 @@ class KaderController extends Controller
     $kader->update($updateData);
 
     return redirect()->route('kader.profile')->with('success', 'Profile updated successfully!');
+}
+public function updatePassword(Request $request)
+{
+    $request->validate([
+        'current_password' => 'required',
+        'new_password' => 'required|string|min:8|confirmed',
+    ]);
+
+    $kader = auth()->guard('kader')->user();
+
+    // Periksa apakah password saat ini cocok
+    if (!Hash::check($request->current_password, $kader->password)) {
+        return back()->withErrors(['current_password' => 'Password saat ini salah.']);
+    }
+
+    // Update password
+    $kader->update([
+        'password' => bcrypt($request->new_password),
+    ]);
+
+    return back()->with('success', 'Password berhasil diubah!');
 }
 public function deleteAccount()
 {

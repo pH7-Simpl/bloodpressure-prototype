@@ -115,7 +115,6 @@
                     <label for="no_bpjs" class="block font-semibold">Nomor BPJS</label>
                     <input type="text" name="no_bpjs" id="no_bpjs" value="{{ old('no_bpjs', $pasien->no_bpjs) }}"
                         class="w-full border-gray-300 rounded-md">
-                    <small class="text-gray-500">Kosongkan jika tidak menggunakan BPJS</small>
                 </div>
             </div>
             <!-- Update Profile Button -->

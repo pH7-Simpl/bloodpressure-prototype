@@ -6,6 +6,7 @@ use App\Models\Dokter;
 use App\Models\BloodPressureReading;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Models\Medicine;
 use App\Models\Suggestion;
 use App\Models\Appointment;
@@ -84,6 +85,27 @@ class DokterController extends Controller
     $dokter->update($updateData);
 
     return redirect()->route('dokter.profile')->with('success', 'Profile updated successfully!');
+}
+public function updatePassword(Request $request)
+{
+    $request->validate([
+        'current_password' => 'required',
+        'new_password' => 'required|string|min:8|confirmed',
+    ]);
+
+    $dokter = auth()->guard('kader')->user();
+
+    // Periksa apakah password saat ini cocok
+    if (!Hash::check($request->current_password, $dokter->password)) {
+        return back()->withErrors(['current_password' => 'Password saat ini salah.']);
+    }
+
+    // Update password
+    $dokter->update([
+        'password' => bcrypt($request->new_password),
+    ]);
+
+    return back()->with('success', 'Password berhasil diubah!');
 }
 
 public function deleteAccount()

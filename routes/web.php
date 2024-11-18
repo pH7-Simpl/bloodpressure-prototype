@@ -47,6 +47,7 @@ Route::middleware('auth:dokter')->group(function () {
     Route::get('/dokter/dashboard', [DokterController::class, 'dashboard'])->name('dokter.dashboard');
     Route::get('/dokter/profile', [DokterController::class, 'showProfile'])->name('dokter.profile');
     Route::post('/dokter/customupdateprofile', [DokterController::class, 'updateProfile'])->name('dokter.updateprofile');
+    Route::post('/dokter/updatepassword', [DokterController::class, 'updatePassword'])->name('dokter.updatepassword');
     Route::delete('/dokter/customdeleteprofile', [DokterController::class, 'delete'])->name('dokter.delete');
     Route::get('/manage-patients', [DokterController::class, 'managePatients'])->name('dokter.managePatients');
     Route::post('/add-patient/{id}', [DokterController::class, 'addPatient'])->name('dokter.addPatient');
@@ -80,6 +81,7 @@ Route::middleware('auth:kader')->group(function () {
     Route::get('/kader/dashboard', [KaderController::class, 'dashboard'])->name('kader.dashboard');
     Route::get('/kader/profile', [KaderController::class, 'showProfile'])->name('kader.profile');
     Route::post('/kader/customupdateprofile', [KaderController::class, 'updateProfile'])->name('kader.updateprofile');
+    Route::post('/kader/updatepassword', [KaderController::class, 'updatePassword'])->name('kader.updatepassword');
     Route::delete('/kader/customdeleteprofile', [KaderController::class, 'delete'])->name('kader.delete');
     Route::get('/kader/patient/{id}', [KaderController::class, 'viewPatient'])->name('kader.view_patient');
     Route::get('/kader/patient/{id}/blood-pressure', [KaderController::class, 'editPatientBloodPressure'])->name('kader.editPatientBloodPressure');

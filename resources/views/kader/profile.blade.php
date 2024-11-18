@@ -10,7 +10,7 @@
     @endif
 
     <div class="bg-white shadow-md rounded-lg p-6">
-    <h1 class="text-3xl font-bold text-center mb-6">Profile Kader</h1>
+        <h1 class="text-3xl font-bold text-center mb-6">Profile Kader</h1>
         <!-- Update Profile Form -->
         <form action="{{ route('kader.updateprofile') }}" method="POST" class="space-y-4">
             @csrf
@@ -65,7 +65,7 @@
                     <input type="text" name="no_handphone" id="no_handphone"
                         value="{{ old('no_handphone', $kader->no_handphone) }}"
                         class="w-full border-gray-300 rounded-md">
-                </div>                
+                </div>
 
                 <div>
                     <label for="agama" class="block font-semibold">Agama</label>
@@ -113,21 +113,66 @@
                     <input type="text" name="alamat" id="alamat" value="{{ old('alamat', $kader->alamat) }}"
                         class="w-full border-gray-300 rounded-md">
                 </div>
-
-                <!-- Input Password -->
-                <div>
-                    <label for="password" class="block font-semibold">Password</label>
-                    <input type="password" name="password" id="password"
-                        class="w-full border-gray-300 rounded-md @error('password') border-red-500 @enderror">
-                    @error('password') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                    <small class="text-gray-500">Kosongkan jika tidak ingin merubah password</small>
-                </div>
             </div>
 
-            <!-- Update Profile Button -->
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
-                Update Profile
-            </button>
+            <!-- Input Password -->
+            <div class="mt-6 flex items-center space-x-4">
+                <!-- Tombol Ganti Password -->
+                <button type="button" class="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600"
+                    data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                    Ganti Password
+                </button>
+                <!-- Tombol Update Profile -->
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                    Update Profile
+                </button>
+            </div>
+
+            <!-- Modal untuk Ganti Password -->
+            <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="changePasswordModalLabel">Ganti Password</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ route('kader.updatepassword') }}" method="POST" id="changePasswordForm">
+                                @csrf
+                                @method('POST')
+                                <div class="mb-3">
+                                    <label for="current_password" class="form-label">Password Saat Ini</label>
+                                    <input type="password" name="current_password" id="current_password"
+                                        class="form-control @error('current_password') is-invalid @enderror">
+                                    @error('current_password')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="mb-3">
+                                    <label for="new_password" class="form-label">Password Baru</label>
+                                    <input type="password" name="new_password" id="new_password"
+                                        class="form-control @error('new_password') is-invalid @enderror">
+                                    @error('new_password')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="mb-3">
+                                    <label for="new_password_confirmation" class="form-label">Konfirmasi Password
+                                        Baru</label>
+                                    <input type="password" name="new_password_confirmation"
+                                        id="new_password_confirmation"
+                                        class="form-control @error('new_password_confirmation') is-invalid @enderror">
+                                    @error('new_password_confirmation')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">Ganti Password</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
 
         <!-- Delete Account Section -->
