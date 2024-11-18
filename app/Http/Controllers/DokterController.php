@@ -11,6 +11,7 @@ use App\Models\Suggestion;
 use App\Models\Appointment;
 use App\Models\Pasien;
 use Illuminate\Support\Facades\Log;
+use App\Rules\UniqueAcrossTables;
 
 class DokterController extends Controller
 {
@@ -29,7 +30,16 @@ class DokterController extends Controller
     // Validate the request data
     $request->validate([
         'nama' => 'required|string|max:255',
-        'nik' => 'required|string',
+        'nik' => [
+            'required',
+            'numeric',
+            new UniqueAcrossTables(
+                ['dokters', 'pasiens', 'kaders'],
+                'nik',
+                'dokters', // Current table
+                $dokter->id // Current record ID
+            ),
+        ],
         'tempat_lahir' => 'required|string',
         'tanggal_lahir' => 'required|date',
         'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',

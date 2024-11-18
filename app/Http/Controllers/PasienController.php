@@ -10,6 +10,7 @@ use App\Models\Suggestion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Rules\UniqueAcrossTables;
 
 class PasienController extends Controller
 {
@@ -28,7 +29,16 @@ class PasienController extends Controller
     try {
     $request->validate([
         'nama' => 'required|string|max:255',
-        'nik' => 'required|numeric',
+        'nik' => [
+            'required',
+            'numeric',
+            new UniqueAcrossTables(
+                ['dokters', 'pasiens', 'kaders'],
+                'nik',
+                'pasiens', // Current table
+                $pasien->id // Current record ID
+            ),
+        ],
         'tempat_lahir' => 'required|string',
         'tanggal_lahir' => 'required|date',
         'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',

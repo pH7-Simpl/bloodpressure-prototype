@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
+use App\Rules\UniqueAcrossTables0;
 
 class AuthController extends Controller
 {
@@ -107,7 +108,11 @@ class AuthController extends Controller
         // Validate input
         $request->validate([
             'name' => 'required|string|max:255',
-            'nik' => 'required|numeric',
+            'nik' => [
+            'required',
+            'numeric',
+            new UniqueAcrossTables0(['dokters', 'pasiens', 'kaders'], 'nik'),
+        ],
             'tempat_lahir' => 'required|string',
             'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|string',

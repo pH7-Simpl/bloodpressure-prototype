@@ -8,6 +8,7 @@ use App\Models\BloodPressureReading;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Pagination\Paginator;
+use App\Rules\UniqueAcrossTables;
 
 class KaderController extends Controller
 {
@@ -25,7 +26,16 @@ class KaderController extends Controller
     // Validate the request data
     $request->validate([
         'nama' => 'required|string|max:255',
-        'nik' => 'required|numeric',
+        'nik' => [
+            'required',
+            'numeric',
+            new UniqueAcrossTables(
+                ['dokters', 'pasiens', 'kaders'],
+                'nik',
+                'kaders', // Current table
+                $kader->id // Current record ID
+            ),
+        ],
         'tempat_lahir' => 'required|string',
         'tanggal_lahir' => 'required|date',
         'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
