@@ -15,7 +15,7 @@ class PasienSeeder2 extends Seeder
     {
         $faker = Faker::create('id_ID'); // Set locale to Indonesia
 
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < 137; $i++) {
             Pasien::create([
                 'nama' => $faker->name,
                 'nik' => $faker->nik(), // Custom NIK generation

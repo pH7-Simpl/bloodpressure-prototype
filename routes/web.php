@@ -7,11 +7,13 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PasienController;
 use App\Http\Controllers\DokterController;
 use App\Http\Controllers\KaderController;
-
+use App\Http\Controllers\AssignmentController;
 
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/assignment-stats', [AssignmentController::class, 'getAssignmentStats'])
+    ->name('assignment.stats');
 
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('/customregister', [AuthController::class, 'register'])->name('customregister');
