@@ -93,7 +93,7 @@ public function updatePassword(Request $request)
         'new_password' => 'required|string|min:8|confirmed',
     ]);
 
-    $dokter = auth()->guard('kader')->user();
+    $dokter = auth()->guard('dokter')->user();
 
     // Periksa apakah password saat ini cocok
     if (!Hash::check($request->current_password, $dokter->password)) {
