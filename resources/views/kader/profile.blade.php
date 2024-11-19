@@ -127,7 +127,7 @@
                     Update Profile
                 </button>
             </div>
-
+        </form>
             <!-- Modal untuk Ganti Password -->
             <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel"
                 aria-hidden="true">
@@ -173,7 +173,6 @@
                     </div>
                 </div>
             </div>
-        </form>
 
         <!-- Delete Account Section -->
         <div class="mt-6 border-t pt-6">
@@ -190,4 +189,14 @@
         </div>
     </div>
 </div>
+<script>
+    // Wait for the document to be fully loaded
+    document.addEventListener('DOMContentLoaded', function () {
+        @if ($errors->has('current_password') || $errors->has('new_password') || $errors->has('new_password_confirmation'))
+            // Show the modal if there are errors in the modal form
+            const changePasswordModal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+            changePasswordModal.show();
+        @endif
+    });
+</script>
 @endsection
