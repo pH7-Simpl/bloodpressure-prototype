@@ -27,7 +27,6 @@ class DokterController extends Controller
 {
     $dokter = auth()->guard('dokter')->user();
 
-    try {
     // Validate the request data
     $request->validate([
         'nama' => 'required|string|max:255',
@@ -54,10 +53,6 @@ class DokterController extends Controller
         'email' => 'required|email',
         'password' => 'nullable|string|min:8',
     ]);
-} catch (\Illuminate\Validation\ValidationException $e) {
-    Log::error('Validation failed: ' . json_encode($e->errors()));
-    return redirect()->back()->withErrors($e->errors());
-}
 
     // Prepare the update data
     $updateData = $request->only([
@@ -88,16 +83,10 @@ class DokterController extends Controller
 }
 public function updatePassword(Request $request)
 {
-    Log::info($request);
-    try {
     $request->validate([
         'current_password' => 'required',
         'new_password' => 'required|string|min:8|confirmed',
     ]);
-} catch (\Illuminate\Validation\ValidationException $e) {
-    Log::error('Validation failed: ' . json_encode($e->errors()));
-    return redirect()->back()->withErrors($e->errors());
-}
 
     $dokter = auth()->guard('dokter')->user();
 
@@ -105,15 +94,11 @@ public function updatePassword(Request $request)
     if (!Hash::check($request->current_password, $dokter->password)) {
         return back()->withErrors(['current_password' => 'Password saat ini salah.']);
     }
-    try {
+
     // Update password
     $dokter->update([
         'password' => bcrypt($request->new_password),
     ]);
-} catch (\Illuminate\Validation\ValidationException $e) {
-    Log::error('Validation failed: ' . json_encode($e->errors()));
-    return redirect()->back()->withErrors($e->errors());
-}
 
     return back()->with('success', 'Password berhasil diubah!');
 }
